@@ -1,0 +1,148 @@
+=============
+Kay Framework
+=============
+
+What's this
+-----------
+
+Kay is a web framework completely specialising on Google App
+Engine. But basic design is based on the Django framework, like
+middleware, settings and pluggable application, etc. Kay uses Werkzeug
+as lower level framework, uses Jinja2 as template engine, uses babel
+for handling language translations. This software is distributed under
+BSD license. See LICENSE for the details.
+
+
+The software that Kay bundles
+-----------------------------
+* babel
+* jinja2
+* simplejson
+* werkzeug
+* pytz
+
+Dependencies
+------------
+* Google App Engine SDK
+
+  If you installed zip version of the SDK(most unix style operation
+  system users are so), don't forget to create a symlink pointed to
+  the real SDK at /usr/local/google_appengine.
+  
+.. code-block:: console
+
+   $ sudo ln -s /some/whare/google_appengine /usr/local/google_appengine    
+
+
+Quick Start
+-----------
+
+* First, copy whole kay directory with your project name, and cd into
+  it, copy settings files.
+
+.. code-block:: console
+
+   $ cp -r kay yourproject
+   $ cd yourproject
+   $ cp settings.py.sample settings.py
+   $ cp app.yaml.sample app.yaml
+
+* Second, you can create your first application with following command.
+
+.. code-block:: console
+
+   $ python manage.py startapp hello
+   $ vi urls.py
+   $ vi settings.py
+
+There is a sample urls.py in the file hello/urls.py as a comment. You
+have to add 'hello' to the INSTALLED_APPS tupple in the settings.py.
+
+
+* Run your application
+
+.. code-block:: console
+
+  $ python manage.py runserver
+
+
+* Upload your application
+
+.. code-block:: console
+
+  $ python manage.py appcfg update
+
+
+* You can handle i18n like following.
+
+.. code-block:: console
+
+   $ scripts/extract-messages hello
+   $ scripts/add-translation --app hello ja
+   $ vi hello/i18n/ja/LC_MESSAGES/messages.po
+   $ scripts/compile-translations hello
+
+You can also merge newly added catalogue into your translations as
+follows.
+
+.. code-block:: console
+
+   $ scripts/extract-messages hello
+   $ scripts/update-translation -l ja hello
+   $ vi hello/i18n/ja/LC_MESSAGES/messages.po
+   $ scripts/compile-translations hello
+
+
+Shell tools
+-----------
+
+* Invoking `python manage.py shell` gives you python (or ipython if
+  available) console session with the same DatastoreFileStub settings
+  of local dev server.
+
+**Note:**
+
+  The local dev server reads datastore data file only on startup. So,
+  the dev server will never notice about the datastore operation on
+  your console session. You must restart your dev server for
+  reflecting the result of the console sessions.
+
+* Invoking `python manage.py rshell` is the same as above except for
+  using RemoteDatastore stub. You can access the data on the
+  production server.
+
+**Note:**
+  
+  Be careful when use this feature.
+
+
+Datastore
+---------
+
+* You must use GAE models directly. You can use kay.utils.forms for
+  form handling. You can construct a form automatically from the model
+  definition with kay.utils.forms.modelform.ModelForm.
+
+  Unfortunately, for now, there is no documentation about forms
+  package yet. Please see kay.tests.formtest for examples. Sorry for
+  the inconvinience.
+
+* By default, db.Model.kind() returns ('model's app name' + _ + 'model
+  name').lower(). So when you see the management console, there will
+  be 'appname_modelname' style kind names . Please don't be surprised
+  with those names.
+
+  You can change this behaviour by settings ADD_APP_PREFIX_TO_KIND to
+  False in your settings.py.
+
+Questions and Bug Report
+------------------------
+
+* Please visit Kay framework google group.
+  http://groups.google.com/group/kay-users
+  
+* Or, contact the project leader directly.
+  Takashi Matsuo <tmatsuo@candit.jp>
+
+* Source code repository:
+  http://bitbucket.org/tmatsuo/kay/  
