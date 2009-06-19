@@ -1,0 +1,14 @@
+syntax: glob
+*.pyc
+*.swp
+*.tmp
+*~
+.DS_Store
+app.yaml
+TODO.pdf
+README.pdf
+settings.py
+
+syntax: regexp
+(.*/)?\#[^/]*\#$
+(.*/)?\.\#[^/]*$
