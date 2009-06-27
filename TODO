@@ -1,0 +1,56 @@
+====
+TODO
+====
+
+kay
+----
+
+* Write documentations about forms, middlewares, jinja2 howtos, etc..
+
+* Re-implement i18n helper commands on manage.py.
+
+* Change the url of paste capability in the werkzeug debugger.
+
+* Implement start-project script doing as follows:
+
+.. code-block:: console
+
+   $ mkdir yourproject
+   $ cd yourproject
+   $ ln -s ../kay/kay .
+   $ ln -s ../kay/manage.py .
+   $ cp ../kay/settings.py.sample ./settings.py
+   $ cp ../kay/app.yaml.sample ./app.yaml
+   $ cp ../kay/urls.py .
+
+
+kay.utils.forms
+----------------
+
+* Make widgets can have media(javascript, css)
+
+ * AjaxModelField
+
+* Implementation of ModelField.
+
+ * Cache the choices automatically
+
+kay.sessions
+------------
+
+* Retry when GAESessionStore.save fails cos' its important to keep
+  users' session data.
+
+
+kay.auth
+---------------
+
+* Another authentication backend other than Google's auth.
+
+ * When using apps domain, we cannot use https on our domain. We have
+   to use appspot.com domain for SSL. So there will be the problem
+   that Kay can not handle the cookies from our own domain.
+   
+   To handle this situation, parhaps we can generate random string
+   internally for carrying the session values from the domain to the
+   other domain.
