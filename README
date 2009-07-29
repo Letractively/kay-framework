@@ -1,0 +1,222 @@
+=============
+Kay Framework
+=============
+
+What's this
+-----------
+
+Kay is a web framework completely specialising on Google App
+Engine. But basic design is based on the Django framework, like
+middleware, settings and pluggable application, etc. Kay uses Werkzeug
+as lower level framework, uses Jinja2 as template engine, uses babel
+for handling language translations. This software is distributed under
+BSD license. See LICENSE for the details.
+
+
+The software that Kay bundles
+-----------------------------
+* babel
+* jinja2
+* simplejson
+* werkzeug
+* pytz
+
+Dependencies
+------------
+* Google App Engine SDK
+
+  If you installed zip version of the SDK(most unix style operation
+  system users are so), don't forget to create a symlink pointed to
+  the real SDK at /usr/local/google_appengine.
+  
+.. code-block:: console
+
+   $ sudo ln -s /some/whare/google_appengine /usr/local/google_appengine    
+
+
+Quick Start
+-----------
+
+* First, make symlynk of kay directory inside your project directry,
+  copy settings files by invoking management script.
+
+.. code-block:: console
+
+   $ hg clone http://bitbucket.org/tmatsuo/kay/
+   $ python kay/manage.py startproject myproject
+   $ cd myproject
+
+* Second, you can create your first application with following command.
+
+.. code-block:: console
+
+   $ python manage.py startapp hello
+   $ vi settings.py
+
+You have to add 'hello' to the INSTALLED_APPS tupple in the
+settings.py. For the details of how to define urls and views for your
+application, please refer to docs/urlmapping.rst.
+
+ * settings.py
+
+.. code-block:: python
+
+  INSTALLED_APPS = (
+    'kay.sessions',
+    'hello'
+  )
+
+* Run your application
+
+.. code-block:: console
+
+  $ python manage.py runserver
+
+
+You can access your first application on the url:
+  http://localhost:8080/hello/
+
+* Upload your application
+
+.. code-block:: console
+
+  $ python manage.py appcfg update
+
+
+* You can handle i18n like following. For the details of i18n, please
+  refer to docs/i18n.rst.
+
+.. code-block:: console
+
+   $ python manage.py extract_messages hello
+   $ python manage.py add_translations hello -l ja
+   $ vi hello/i18n/ja/LC_MESSAGES/messages.po
+   $ python manage.py compile_translations hello
+
+You can also merge newly added catalogue into your translations as
+follows.
+
+.. code-block:: console
+
+   $ python manage.py extract_messages hello
+   $ python manage.py update_translations hello -l ja
+   $ vi hello/i18n/ja/LC_MESSAGES/messages.po
+   $ python manage.py compile_translations hello
+
+
+Shell tools
+-----------
+
+* Invoking `python manage.py shell` gives you python (or ipython if
+  available) console session with the same DatastoreFileStub settings
+  of local dev server. For the details of manage.py commands, please
+  refer to docs/manage_py.rst.
+
+**Note:**
+
+  The local dev server reads datastore data file only on startup. So,
+  the dev server will never notice about the datastore operation on
+  your console session. You must restart your dev server for
+  reflecting the result of the console sessions.
+
+* Invoking `python manage.py rshell` is the same as above except for
+  using RemoteDatastore stub. You can access the data on the
+  production server.
+
+**Note:**
+  
+  Please be careful when you use this feature.
+
+
+Datastore
+---------
+
+* You must use GAE models directly. You can use kay.utils.forms for
+  form handling. You can construct a form automatically from the model
+  definition with kay.utils.forms.modelform.ModelForm. For the details
+  of how to use forms, please refer to docs/forms-usage.rst.
+
+* By default, db.Model.kind() returns ('model's app name' + _ + 'model
+  name').lower(). So when you see the management console, there will
+  be 'appname_modelname' style kind names . Please don't be surprised
+  with those names.
+
+  You can change this behaviour by settings ADD_APP_PREFIX_TO_KIND to
+  False in your settings.py.
+
+Forms
+-----
+
+* To define form class, you can define a class that extends
+  kay.utils.forms.Form. For example the code bellow will give you the
+  form contains two text fields with different validators.
+
+.. code-block:: python
+
+    from kay.utils.forms import Form
+    class PersonForm(Form):
+      name = TextField(required=True)
+      age = IntegerField()
+
+
+You can use this form in your view like following.
+ 
+.. code-block:: python
+
+    from forms import PersonForm
+    form = PersonForm()
+    if request.method == 'POST'
+      if form.validate(request.form, request.files):
+        name = form['name']
+	age = form['age']
+        do something with valid form ...
+      else:
+        do something with invalid form ...
+
+
+* You can also use ModelForm to create a form automatically from Model
+  class.
+
+.. code-block:: python
+
+    from google.appengine.ext import db
+
+    class MyModel(db.Model):
+      name = db.StringProperty(required=True)
+      age = db.IntegerProperty()
+
+    from kay.utils.forms.modelform import ModelForm
+
+    class MyForm(ModelForm):
+      class Meta:
+        model = MyModel
+
+Manuals
+-------
+
+* URL Mapping
+  docs/urlmapping.rst
+
+* Form manual
+  docs/forms-usage.rst
+
+* i18n
+  docs/i18n.rst
+
+* Management script
+  docs/manage_py.rst
+
+
+Questions and Bug Report
+------------------------
+
+* Please visit Kay framework google group.
+  http://groups.google.com/group/kay-users
+  
+* Or, contact the project leader directly.
+  Takashi Matsuo <tmatsuo@candit.jp>
+
+* Code site
+  http://code.google.com/p/kay-framework/
+
+Have fun!
