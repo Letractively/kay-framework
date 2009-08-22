@@ -1,0 +1,35 @@
+====
+TODO
+====
+
+kay
+----
+
+* Implementation for handling process_view of middleware classes.
+
+* Write documentations about middlewares, jinja2 howtos, etc..
+
+* Change the url of paste capability in the werkzeug debugger.
+
+* Handle CapabilityDisabledError more gracefully.
+
+
+kay.utils.forms
+----------------
+
+* Make widgets can have media(javascript, css)
+
+ * AjaxModelField
+
+
+kay.sessions
+------------
+
+* Retry when GAESessionStore.save fails cos' its important to keep
+  users' session data.
+
+kay.auth
+--------
+
+* Refactoring
+
