@@ -1,0 +1,36 @@
+====
+TODO
+====
+
+kay
+----
+
+* Write documentations about middlewares, jinja2 howtos, etc..
+
+* Change the url of paste capability in the werkzeug debugger.
+
+* Handle CapabilityDisabledError more gracefully.
+
+
+kay.utils.forms
+----------------
+
+* Make widgets can have media(javascript, css)
+
+ * AjaxModelField
+
+ * Implement a widget with JQuery's DatetimePicker
+
+
+kay.auth
+--------
+
+* A command for creating a user entity.
+
+
+Local GUI datastore administration tool
+---------------------------------------
+
+* An implementation using wxpython is the first option. Using
+  pyqt/Adobe air/tkinter would be also fine.
+
