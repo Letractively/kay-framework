@@ -24,7 +24,10 @@ from babel.messages import Catalog
 from babel.messages.extract import extract_from_dir
 from babel.messages.pofile import write_po
 
-from kay.management.utils import print_status
+from kay.management.utils import (
+  print_status, get_user_apps,
+)
+from kay.conf import settings
 
 KEYWORDS = {
   '__': None,
@@ -40,6 +43,7 @@ METHODS = [
   ('**.py', 'python'),
   ('**/templates/*~', 'ignore'),
   ('**/templates/**.*', 'jinja2.ext:babel_extract'),
+  ('**.html', 'jinja2.ext:babel_extract'),
   ('**.js', 'ignore'),
   ('**/templates_compiled/**.*', 'ignore'),
 ]
@@ -60,19 +64,25 @@ def strip_path(filename, base):
 
 
 def do_extract_messages(target=('t', ''), domain=('d', 'messages'),
-                        i18n_dir=('i', '')):
+                        i18n_dir=('i', ''), all=('a', False)):
   """
   Extract messages and create pot file.
   """
   if not domain in ('messages', 'jsmessages'):
     print_status('invalid domain.')
     sys.exit(1)
-  if not target:
+  if not target and not all:
     print_status('Please specify target.')
     sys.exit(1)
   elif target == 'kay':
     print_status('Extracting core strings')
     root = kay.KAY_DIR
+  elif all:
+    targets = get_user_apps()
+    for target in targets:
+      do_extract_messages(target=target, domain=domain, i18n_dir=None,
+                          all=False)
+    sys.exit(0)
   else:
     root = path.abspath(target)
     if not path.isdir(root):
@@ -91,7 +101,14 @@ def do_extract_messages(target=('t', ''), domain=('d', 'messages'),
     if method != 'ignore':
       print_status(strip_path(filename, root))
 
-  extracted = extract_from_dir(root, methods, {}, KEYWORDS,
+  option = {}
+  option['extensions'] = ','.join(settings.JINJA2_EXTENSIONS)
+  option.update(settings.JINJA2_ENVIRONMENT_KWARGS)
+  options = {
+    '**/templates/**.*': option,
+    '**.html': option,
+  }
+  extracted = extract_from_dir(root, methods, options, KEYWORDS,
                                COMMENT_TAGS, callback=callback,
                                strip_comment_tags=True)
 
