@@ -29,27 +29,28 @@ def process_context(request):
   return {'user': request.user}
 
 def login(request, **credentials):
-    """
-    If the given credentials are valid, return a User object.
-    """
-    backend = local.app.auth_backend
-    try:
-        user = backend.login(request, **credentials)
-    except TypeError:
-        # This backend doesn't accept these credentials as arguments. Try the next one.
-        pass
-    return user or False
+  """
+  If the given credentials are valid, return a User object.
+  """
+  backend = local.app.auth_backend
+  try:
+    user = backend.login(request, **credentials)
+  except TypeError:
+    # This backend doesn't accept these credentials as arguments.
+    # Try the next one.
+    pass
+  return user or False
 
 def logout(request):
-    """
-    Removes the authenticated user's ID from the request and flushes their
-    session data.
-    """
-    from kay.sessions import flush_session
-    flush_session(request)
-    if hasattr(request, 'user'):
-        from kay.auth.models import AnonymousUser
-        request.user = AnonymousUser()
+  """
+  Removes the authenticated user's ID from the request and flushes their
+  session data.
+  """
+  from kay.sessions import flush_session
+  flush_session(request)
+  if hasattr(request, 'user'):
+    from kay.auth.models import AnonymousUser
+    request.user = AnonymousUser()
 
 def create_new_user(user_name, password=None, **kwargs):
   try:
@@ -67,9 +68,9 @@ def create_new_user(user_name, password=None, **kwargs):
                           **kwargs)
 
     if password:
-        new_user.set_password(password)
+      new_user.set_password(password)
     else:
-        new_user.set_unusable_password()
+      new_user.set_unusable_password()
     # set_password/set_unusable_password calls put()
     #new_user.put()
     return new_user
