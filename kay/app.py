@@ -226,9 +226,9 @@ class KayApp(object):
     """
     Initialize translations with specified language.
     """
-    from kay.i18n import load_translations
     global translations_cache
     if self.app_settings.USE_I18N:
+      from kay.i18n import load_translations
       translations = translations_cache.get("trans:%s:%s" %
                                             (self.app_settings.APP_NAME, lang),
                                             None)
@@ -371,7 +371,11 @@ class KayApp(object):
   def _get_traceback(self, exc_info):
     "Helper function to return the traceback as a string"
     import traceback
-    return '\n'.join(traceback.format_exception(*(exc_info or sys.exc_info())))
+    ret = '\n'.join(traceback.format_exception(*(exc_info or sys.exc_info())))
+    try:
+      return ret.decode('utf-8')
+    except UnicodeDecodeError:
+      return ret
 
   def __call__(self, environ, start_response):
     kay.setup_syspath()
