@@ -93,7 +93,7 @@ There are various useful functions in :mod:`kay.utils`.
 
 .. function:: get_by_key_name_or_404(model_class, key_name)
 
-   Try get the data with given key_name and return it or raise
+   Try to get the data with given key_name and return it or raise
    :class:`werkzeug.exceptions.NotFound` when failed.
 
    :param model_class: the model class
@@ -102,7 +102,7 @@ There are various useful functions in :mod:`kay.utils`.
 
 .. function:: get_by_id_or_404(model_class, id)
 
-   Try get the data with given id and return it or raise
+   Try to get the data with given id and return it or raise
    :class:`werkzeug.exceptions.NotFound` when failed.
 
    :param model_class: the model class
@@ -111,7 +111,7 @@ There are various useful functions in :mod:`kay.utils`.
 
 .. function:: get_or_404(model_class, key)
 
-   Try get the data with given key and return it or raise
+   Try to get the data with given key and return it or raise
    :class:`werkzeug.exceptions.NotFound` when failed.
 
    :param model_class: the model class
