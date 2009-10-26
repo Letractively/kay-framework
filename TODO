@@ -1,0 +1,48 @@
+====
+TODO
+====
+
+Documentation
+-------------
+
+* Write documentations about
+
+ * How to contribute to Kay
+ * Template strategy
+
+kay
+---
+
+* Capability for compressing css and js media with i18n.
+
+* It could be better than now to installing Kay to somewhere on the
+  system paths.
+
+* A script for buildout.
+
+kay.auth
+--------
+
+* Incorporate Ian's ChoiceBackend.
+
+
+kay.utils.forms
+----------------
+
+* AjaxModelField
+
+* Implement a widget with JQuery's DatetimePicker
+
+
+kay.auth
+--------
+
+* 'Registration' application needed.
+
+
+kay.utils.forms
+---------------
+
+* Form.freeze() method could be useful in some cases.
+
+
