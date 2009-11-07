@@ -1,0 +1,47 @@
+====
+TODO
+====
+
+Documentation
+-------------
+
+* Write documentations about
+
+ * How to contribute to Kay
+ * Template strategy
+
+* Create Japanese translations of 
+
+ * forms_reference
+
+kay
+---
+
+* Capability for compressing css and js media with i18n.
+
+* It could be better than now to installing Kay to somewhere on the
+  system paths.
+
+* A script for buildout.
+
+kay.auth
+--------
+
+* Incorporate Ian's ChoiceBackend.
+
+* Need a way to purge expired RegistrationProfile entities.
+
+kay.utils.forms
+----------------
+
+* AjaxModelField
+
+* Implement a widget with JQuery's DatetimePicker
+
+
+kay.utils.forms
+---------------
+
+* Form.freeze() method could be useful in some cases.
+
+
