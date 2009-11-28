@@ -1,0 +1,51 @@
+====
+TODO
+====
+
+Documentation
+-------------
+
+* Write documentations about
+
+ * How to contribute to Kay
+ * Template strategy
+ * registration app
+
+kay
+---
+
+* set/get flash message (a simple cookie based implementation would be
+  fine)
+
+* Capability for compressing css and js media with i18n.
+
+* It could be better than now to installing Kay to somewhere on the
+  system paths.
+
+* A script for buildout.
+
+* A capability for veryfying OpenSocial Signed Request.
+
+kay.auth
+--------
+
+* `Forgot password?` capability for DatastoreUser
+
+* `Change password` capability for DatastoreUser
+
+* Incorporate Ian's ChoiceBackend.
+
+kay.utils.forms
+----------------
+
+* AjaxModelField
+
+* Implement a widget with JQuery's DatetimePicker
+
+
+kay.utils.forms
+---------------
+
+* Form.freeze() method could be useful in some cases.
+
+
