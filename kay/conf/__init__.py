@@ -52,7 +52,7 @@ class LazySettings(LazyObject):
     # override settings_module if user has set settings module in the environment variable
     self.settings_module = os.environ.get(ENVIRONMENT_VARIABLE, self.settings_module)
     if not self.settings_module: # If it's set but is an empty string.
-        raise KeyError
+      raise KeyError
 
     self._wrapped = Settings(self.settings_module)
     try:
