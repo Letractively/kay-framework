@@ -102,6 +102,7 @@ class KayApp(object):
         self._view_middleware = self._exception_middleware = None
     self.auth_backend = None
     self.init_jinja2_environ()
+    self.init_ereporter()
 
   def get_mount_point(self, app):
     if app == 'kay._internal':
@@ -181,6 +182,19 @@ class KayApp(object):
             'Failed to import %s: "%s".' %\
             (self.app_settings.AUTH_USER_BACKEND, e)
       self.auth_backend = klass()
+
+  def init_ereporter(self):
+      if self.app_settings.USE_EREPORTER:
+          import logging
+          from google.appengine.ext import ereporter
+
+          # Logging handlers are global so we need to make sure the logger
+          # isn't registered already.
+          logger = logging.getLogger()
+          for handler in logger.handlers:
+              if isinstance(handler, ereporter.ExceptionRecordingHandler):
+                  return
+          ereporter.register_logger()
 
   def init_jinja2_environ(self):
     """
@@ -393,11 +407,14 @@ class KayApp(object):
       except Exception, e:
         request_repr = "Request repr() unavailable"
       message = "%s\n\n%s" % (self._get_traceback(exc_info), request_repr)
-      logging.error(message)
+
+      # Log exception to make the message available to ereporter
+      logging.exception(message)
       if self.app_settings.DEBUG:
         return InternalServerError(message.replace("\n", "<br/>\n"))
       else:
-        mail.mail_admins(subject, message, fail_silently=True)
+        if not self.app_settings.NOTIFY_ERRORS_TO_ADMINS:
+            mail.mail_admins(subject, message, fail_silently=True)
         # TODO: Return an HttpResponse that displays a friendly error message.
         return InternalServerError()
 
