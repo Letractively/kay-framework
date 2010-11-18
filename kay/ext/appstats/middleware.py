@@ -18,7 +18,7 @@ class AppStatsMiddleware(object):
 
   def process_request(self, request):
     """
-    Called by Django before deciding which view to execute.
+    Called by Kay before deciding which view to execute.
     """
     from google.appengine.ext.appstats.recording import start_recording
     start_recording()
