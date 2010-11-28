@@ -41,7 +41,10 @@ if not is_in_production():
     from google.appengine.api import user_service_stub
     from google.appengine.api.memcache import memcache_stub
     from google.appengine.api.labs.taskqueue import taskqueue_stub
-    from google.appengine.api.images import images_stub
+    try:
+        from google.appengine.api.images import images_stub
+    except ImportError:
+        pass
 
     AUTH_DOMAIN = 'gmail.com'
 
@@ -91,7 +94,10 @@ def get_dev_apiproxy():
     _apiproxy.RegisterStub('mail', mail_stub.MailServiceStub()) 
     _apiproxy.RegisterStub('memcache', memcache_stub.MemcacheServiceStub()) 
     _apiproxy.RegisterStub('taskqueue', taskqueue_stub.TaskQueueServiceStub()) 
-    _apiproxy.RegisterStub('images', images_stub.ImagesServiceStub())
+    try:
+      _apiproxy.RegisterStub('images', images_stub.ImagesServiceStub())
+    except NameError:
+      pass
 
     return _apiproxy
 
