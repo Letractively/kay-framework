@@ -398,9 +398,12 @@ class KayApp(object):
     import os
     if 'SERVER_SOFTWARE' in os.environ and \
           os.environ['SERVER_SOFTWARE'].startswith('Dev'):
-      raise
+      if self.app_settings.USE_EREPORTER and not self.app_settings.DEBUG:
+        logging.exception("An Unhandled Exception Occurred.")
+        return InternalServerError()
+      else:
+        raise
     else:
-      subject = 'Error %s: %s' % (request.remote_addr, request.path)
       try:
         from kay.utils import repr
         request_repr = repr.dump(request)
@@ -408,12 +411,16 @@ class KayApp(object):
         request_repr = "Request repr() unavailable"
       message = "%s\n\n%s" % (self._get_traceback(exc_info), request_repr)
 
-      # Log exception to make the message available to ereporter
-      logging.exception(message)
+      if self.app_settings.USE_EREPORTER:
+        logging.exception("An Unhandled Exception Occurred.")
+      else:
+        logging.error(message)
+
       if self.app_settings.DEBUG:
         return InternalServerError(message.replace("\n", "<br/>\n"))
       else:
-        if not self.app_settings.NOTIFY_ERRORS_TO_ADMINS:
+        if not self.app_settings.USE_EREPORTER:
+            subject = 'Error %s: %s' % (request.remote_addr, request.path)
             mail.mail_admins(subject, message, fail_silently=True)
         # TODO: Return an HttpResponse that displays a friendly error message.
         return InternalServerError()
