@@ -18,7 +18,8 @@ class NullHandler(logging.Handler):
 
 class ServerErrorTest(GAETestBase):
   def setUp(self):
-    s = LazySettings(settings_module='kay.tests.regressiontests.server_error_settings')
+    s = LazySettings(
+      settings_module='kay.tests.regressiontests.server_error_settings')
     app = get_application(settings=s)
     self.client = Client(app, BaseResponse)
     self.client.test_logout()
