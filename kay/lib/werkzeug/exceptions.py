@@ -153,6 +153,17 @@ class HTTPException(Exception):
     def __repr__(self):
         return '<%s \'%s\'>' % (self.__class__.__name__, self)
 
+    @property
+    def status_code(self):
+        # This property is added for more robust consistency between
+        # BaseResponse and HTTPException.
+        import logging
+        logging.warn("Deprecation warning. The status_code property on "
+                     "werkzeug HTTPException objects is not part of the "
+                     "standard werkzeug distribution and may be removed in a "
+                     "future version of kay.")
+        return self.code
+
 class _ProxyException(HTTPException):
     """An HTTP exception that expands renders a WSGI application on error."""
 
