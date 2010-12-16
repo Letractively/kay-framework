@@ -11,6 +11,34 @@ Let me introduce you some of useful packages from ``kay.ext`` package.
 
 .. module:: kay.ext
 
+kay.ext.appstats
+======================
+
+.. module:: kay.ext.appstats
+
+kay.ext.appstats is a package that includes utilities to allow you to use appstats easily.
+
+For more information about appstats, please see the `Appstats for Python <http://code.google.com/intl/en/appengine/docs/python/tools/appstats.html>`_ page in the Google Appengine SDK Documentation.
+
+.. class:: kay.ext.appstats.middleware.AppStatsMiddleware 
+
+The appstats packages includes the ``AppStatsMiddleware`` class which will enable appstats for your application. Simply add ``kay.ext.appstats.middleware.AppStatsMiddleware`` to your :attr:`settings.MIDDLEWARE_CLASSES` to enable the middleware.
+
+.. code-block:: python
+
+    MIDDLEWARE_CLASSES = (
+        # ...
+        'kay.ext.appstats.middleware.AppStatsMiddleware',
+        # ...
+    )
+
+You will also need to enable the appstats admin interface in your ``app.yaml`` as explained in the SDK documentation.
+
+.. code-block:: yaml
+
+    builtins:
+    - appstats: on
+
 kay.ext.nuke
 ============
 
