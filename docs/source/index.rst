@@ -25,6 +25,7 @@ Contents:
   views
   templates
   utils
+  decorators
   auth
   session
   forms-usage
