@@ -80,6 +80,12 @@ def get_timezone(tzname):
     _timezone_cache['tzname'] = tz
   return tz
 
+def is_dev_server():
+  return ('SERVER_SOFTWARE' in os.environ and
+      os.environ['SERVER_SOFTWARE'].startswith('Dev'))
+
+def is_appengine():
+  return not is_dev_server()
 
 def raise_on_dev():
   if 'SERVER_SOFTWARE' in os.environ and \

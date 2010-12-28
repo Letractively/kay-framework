@@ -127,6 +127,21 @@ def retry_on_timeout(retries=3, secs=1):
     return _wrapper
   return _decorator
 
+def cron_only(func):
+  from werkzeug.exceptions import Forbidden
+  def inner(request, *args, **kwargs):
+    from kay.utils import is_dev_server
+    from kay.conf import settings
+
+    # Only allow access in the following cases
+    # 1. We are using the dev server in DEBUG mode
+    # 2. The X-AppEngine-Cron request header is set to true
+    if (not (is_dev_server() and settings.DEBUG) and
+        not request.headers.get("X-AppEngine-Cron") == "true"):
+      raise Forbidden("This URL is cron only")
+    return func(request, *args, **kwargs)
+  return inner
+
 def maintenance_check(endpoint='_internal/maintenance_page'):
   """
   checks if datastore capabilities stays available for certain time.
