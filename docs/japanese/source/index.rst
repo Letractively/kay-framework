@@ -25,6 +25,7 @@ Kay ドキュメントへようこそ
   views
   templates
   utils
+  decorators
   auth
   session
   forms-usage
