@@ -25,10 +25,13 @@ def mail_admins(subject, message, fail_silently=False):
     # simply do nothing.
     return
 
-  if (not sender_mail and 
+  if (settings.DEBUG and not sender_mail and 
           (settings.ADMINS or settings.NOTIFY_ERRORS_TO_GAE_ADMINS)):
+    # DEPRECATED 1.1
+    # This code is deprecated and will be removed in
+    # versions >= 1.5 or 2.0
     import logging
-    logging.warn("Deprecation warning. Please set the DEFAULT_MAIL_FROM "
+    logging.debug("Deprecation warning. Please set the DEFAULT_MAIL_FROM "
                  "setting in your settings.py. You will need to set the "
                  "DEFAULT_MAIL_FROM setting in order for error mails to "
                  "work properly in future versions of kay.")
