@@ -90,7 +90,7 @@ def get_app_tailname(app):
     return app[dot+1:]
   else:
     return app
-  
+
 
 class KayApp(object):
 
@@ -101,7 +101,22 @@ class KayApp(object):
     self._request_middleware = self._response_middleware = \
         self._view_middleware = self._exception_middleware = None
     self.auth_backend = None
-    self.init_jinja2_environ()
+
+  @property
+  def jinja2_env(self):
+    if not hasattr(self, '_jinja2_env'):
+      self.init_jinja2_environ()
+
+    if hasattr(self, 'active_translations'):
+      if self.app_settings.USE_I18N:
+        self._jinja2_env.install_gettext_translations(self.active_translations)
+      else:
+        self._jinja2_env.globals.update(
+          _=lambda x: x,
+          gettext=lambda x: x,
+          ngettext=lambda s, p, n: (n != 1 and (p,) or (s,))[0]
+        )
+    return self._jinja2_env
 
   def get_mount_point(self, app):
     if app == 'kay._internal':
@@ -123,21 +138,21 @@ class KayApp(object):
     mod = import_string(url_module)
     if hasattr(mod, 'view_groups'):
       base_rules = []
-      views = {}
+      self.views = {}
       for view_group in getattr(mod, 'view_groups'):
         try:
           base_rules = base_rules + view_group.get_rules()
-          views.update(view_group.get_views())
+          self.views.update(view_group.get_views())
         except Exception, e:
           logging.error("Failed to mount ViewGroup: %s", e)
           raise
       import copy
-      url_map = Map(copy.deepcopy(base_rules))
+      self.url_map = Map(copy.deepcopy(base_rules))
     else:
       make_url = getattr(mod, 'make_url')
       all_views = getattr(mod, 'all_views')
-      views = all_views
-      url_map = make_url()
+      self.views = all_views
+      self.url_map = make_url()
     for app in self.get_installed_apps():
       mountpoint = self.get_mount_point(app)
       if mountpoint is None:
@@ -153,13 +168,13 @@ class KayApp(object):
           logging.error("Failed to import app '%s.urls'." % app)
           logging.debug("Reason:\n%s" % self._get_traceback(sys.exc_info()))
           raise
+      rules = []
       if hasattr(url_mod, 'view_groups'):
-        rules = []
         for view_group in getattr(url_mod, 'view_groups'):
           try:
             endpoint_prefix = app.split(".")[-1]
             rules = rules + view_group.get_rules(endpoint_prefix)
-            views.update(view_group.get_views(endpoint_prefix))
+            self.views.update(view_group.get_views(endpoint_prefix))
           except Exception, e:
             logging.error("Failed to mount ViewGroup: %s", e)
             raise
@@ -169,8 +184,8 @@ class KayApp(object):
           rules = make_rules()
         all_views = getattr(url_mod, 'all_views', None)
         if all_views:
-          views.update(all_views)
-      url_map.add(Submount(mountpoint, rules))
+          self.views.update(all_views)
+      self.url_map.add(Submount(mountpoint, rules))
     # TODO move the block bellow to somewhere else
     if 'kay.auth.middleware.AuthenticationMiddleware' in \
           self.app_settings.MIDDLEWARE_CLASSES:
@@ -181,8 +196,6 @@ class KayApp(object):
             'Failed to import %s: "%s".' %\
             (self.app_settings.AUTH_USER_BACKEND, e)
       self.auth_backend = klass()
-    self.views = views
-    self.url_map = url_map
 
   def init_jinja2_environ(self):
     """
@@ -238,20 +251,20 @@ class KayApp(object):
       jinja2_ext.append(ext)
     env_dict.update(dict(loader = loader, undefined=NullUndefined,
                          extensions=jinja2_ext))
-    self.jinja2_env = Environment(**env_dict)
+    self._jinja2_env = Environment(**env_dict)
     for key, filter_str in self.app_settings.JINJA2_FILTERS.iteritems():
       try: 
         func = import_string(filter_str)
       except (ImportError, AttributeError):
         logging.warn('Cannot import %s.' % filter_str)
         continue
-      if self.jinja2_env.filters.has_key(key):
+      if self._jinja2_env.filters.has_key(key):
         logging.warn('Key "%s" has already defined, skipped.' % key)
         continue
       if not callable(func):
         logging.warn('%s is not a callable.' % filter_str)
         continue
-      self.jinja2_env.filters[key] = func
+      self._jinja2_env.filters[key] = func
 
   def load_middleware(self):
     self._response_middleware = []
@@ -298,16 +311,10 @@ class KayApp(object):
         translations_cache["trans:%s:%s" %
                      (self.app_settings.APP_NAME, lang)] = translations
       self.active_translations = translations
-      self.jinja2_env.install_gettext_translations(translations)
     else:
       from kay.i18n import KayNullTranslations
       lang = None
       self.active_translations = KayNullTranslations()
-      self.jinja2_env.globals.update(
-        _=lambda x: x,
-        gettext=lambda x: x,
-        ngettext=lambda s, p, n: (n != 1 and (p,) or (s,))[0]
-      )
     request.lang = lang
 
     if self._request_middleware is None:
