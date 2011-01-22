@@ -8,6 +8,7 @@ syntax: glob
 docs/build
 docs/japanese/build
 kay/lib/jinja2/_speedups.so
+templates_compiled
 
 syntax: regexp
 (.*/)?\#[^/]*\#$
