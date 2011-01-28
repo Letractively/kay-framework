@@ -23,6 +23,7 @@ from werkzeug import Response
 
 from kay.conf import settings
 from kay.handlers import BaseHandler
+from kay.utils.decorators import cron_only
 from kay.ext.ereporter.models import ExceptionRecord
 
 def isTrue(val):
@@ -132,7 +133,7 @@ class ReportGenerator(BaseHandler):
 
     return Response()
 
-report_generator = ReportGenerator()
+report_generator = cron_only(ReportGenerator())
 
 def report_admin(request):
     from kay.utils import render_to_response
