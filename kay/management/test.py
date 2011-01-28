@@ -55,6 +55,13 @@ def setup_env():
         os.path.dirname(
           os.path.dirname(os.path.abspath(__file__)))))
     os.environ['APPLICATION_ID'] = fake_appid
+  try:
+    os.environ['CURRENT_VERSION_ID'] = get_versionid()
+  except Exception:
+    # Note: Must have a major and minor version seperated by a '.'
+    fake_versionid = "1.1"
+    os.environ['CURRENT_VERSION_ID'] = fake_versionid
+
   os.environ['USER_EMAIL'] = ''
   os.environ['SERVER_NAME'] = 'localhost'
   os.environ['SERVER_PORT'] = '80'
