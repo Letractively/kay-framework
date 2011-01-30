@@ -74,6 +74,8 @@ JINJA2_EXTENSIONS = (
 SUBMOUNT_APPS = (
 )
 
+JINJA2_PRECOMPILATION_EXCLUDES = r'^.*(\.swp|\.png|\.jpg|\.gif|\.pdf)$'
+
 MIDDLEWARE_CLASSES = (
 )
 
