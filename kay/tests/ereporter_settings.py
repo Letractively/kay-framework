@@ -17,7 +17,7 @@ SESSION_PREFIX = 'gaesess:'
 COOKIE_AGE = 1209600 # 2 weeks
 COOKIE_NAME = 'KAY_SESSION'
 
-ADD_APP_PREFIX_TO_KIND = False
+ADD_APP_PREFIX_TO_KIND = True
 
 ADMINS = (
 )
@@ -30,6 +30,7 @@ DEFAULT_LANG = 'en'
 
 INSTALLED_APPS = (
   'kay.auth',
+  'kay.ext.ereporter',
   'kay.tests.ereporter_testapp',
 )
 
@@ -51,5 +52,3 @@ MIDDLEWARE_CLASSES = (
 
 AUTH_USER_BACKEND = "kay.auth.backends.datastore.DatastoreBackend"
 AUTH_USER_MODEL = "kay.auth.models.DatastoreUser"
-
-USE_EREPORTER=True
