@@ -26,23 +26,29 @@ class EReporterTest(GAETestBase):
     #self.client.test_logout()
 
     # Suppress logging error messages
-    #self._base_logger = logging.getLogger("")
-    #self._old_logging_handlers = self._base_logger.handlers
-    #self._base_logger.handlers = [NullHandler()] 
+    self._base_logger = logging.getLogger("")
+    self._old_logging_handlers = self._base_logger.handlers
+    self._base_logger.handlers = filter(
+        lambda h: not isinstance(h, logging.StreamHandler),
+        self._old_logging_handlers,
+    ) 
 
-  #def tearDown(self):
-  #  self.client.test_logout()
-  #  self._base_logger.handlers = self._old_logging_handlers
+  def tearDown(self):
+    self.client.test_logout()
+    self._base_logger.handlers = self._old_logging_handlers
 
   def test_ereporter(self):
-    from google.appengine.ext.ereporter import ExceptionRecord
+    from kay.ext.ereporter.models import ExceptionRecord
     self.assertEqual(ExceptionRecord.all().count(), 0, "ExceptionRecord objects already exist!")
 
     response = self.client.get(url_for('ereporter_testapp/index'))
     self.assertEqual(response.status_code, 500, "Expected 500 error code.")
     self.assertEqual(ExceptionRecord.all().count(), 1)
 
-    sleep(10); # Must wait ten seconds for the cache to clear! Arg!
+    # Must wait ten seconds for the cache to clear! Arg!
+    # TODO: Set memcached stub to a null stub
+    sleep(10); 
+
     response = self.client.get(url_for('ereporter_testapp/index'))
     self.assertEqual(response.status_code, 500, "Expected 500 error code.")
     self.assertEqual(ExceptionRecord.all().count(), 1, "More than one ExceptionRecord object was created!")
