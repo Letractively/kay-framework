@@ -1,0 +1,91 @@
+from __future__ import division
+from jinja2.runtime import LoopContext, TemplateReference, Macro, Markup, TemplateRuntimeError, missing, concat, escape, markup_join, unicode_join, to_string, TemplateNotFound
+name = '/admin.html'
+
+def root(context, environment=environment):
+    l_form_list = context.resolve('form_list')
+    l_flash_msg = context.resolve('flash_msg')
+    l_new_form = context.resolve('new_form')
+    l__ = context.resolve('_')
+    t_1 = environment.filters['safe']
+    t_2 = environment.filters['format']
+    if 0: yield None
+    yield u'<html>\n  <head>\n    <title>%s</title>\n    <style type="text/css">\n      body {\n        font-family: Arial, sans-serif;\n        font-size: 62.5%%;\n      }\n      form {\n        margin: 0;\n      }\n      .goog-button:focus, .goog-button:hover {\n        border-color: #000000;\n      }\n      .goog-button {\n        -webkit-border-radius: 2px;\n        -moz-border-radius: 2px;\n        border-radius: 2px;\n        /* for firefox 3.6+ */\n        background: -moz-linear-gradient(center top , #FFFFFF, #DDDDDD) repeat scroll 0 0 transparent;\n        /* for IE */\n        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'#FFFFFF\', endColorstr=\'#DDDDDD\');\n        /* for webkit browsers */\n        background: -webkit-gradient(linear, center top, center bottom, from(#FFFFFF), to(#DDDDDD));\n        border-color: #BBBBBB #999999 #999999 #BBBBBB;\n        border-style: solid;\n        border-width: 1px;\n        color: #000000;\n        cursor: pointer;\n        display: inline-block;\n        font: 13px Arial,sans-serif;\n        margin: 0;\n        padding: 4px 8px 5px;\n        text-decoration: none;\n        text-shadow: 0 1px 1px #FFFFFF;\n      }\n      .g-doc {\n        font-size: 130%%;\n      }\n      .ae-message {\n        background-color: #F6F9FF;\n        border: 1px solid #E5ECF9;\n        margin-bottom: 1em;\n        padding: 0.5em;\n      }\n      .ae-alert {\n        background: url(https://appengine.google.com/img/icn/icn-warning.gif) no-repeat;\n        font-weight: bold;\n        margin-bottom: 0.5em;\n        padding-left: 1.8em;\n      }\n      .ae-disabled {\n        color: #666 !important;\n        cursor: default !important;\n        text-decoration: none !important;\n      }\n      .ae-table-caption {\n        background: #E5ECF9;\n        border: 1px solid #C5D7EF;\n      }\n      .ae-table-caption.ae-paginate {\n        padding: 2px 5px;\n      }\n      .ae-item {\n        padding: 5px;\n        border-top: 1px solid #C5D7EF;\n        border-left: 1px solid #C5D7EF;\n        border-right: 1px solid #C5D7EF;\n      }\n      .ae-item.last {\n        border-bottom: 1px solid #C5D7EF;\n      }\n      .ae-item-header {\n        font-size: 120%%;\n        padding-bottom: 5px;\n      }\n      .ae-item-details div {\n        display: inline-block; \n      }\n      .ae-item-details div.key {\n        width: 200px;\n      }\n      .ae-item-details div.value {\n        width: 350px;\n      }\n      .ae-item-details th {\n        vertical-align: top;\n      }\n      .ae-item-details th,.ae-item-details td {\n        font-size: 80%%;\n      }\n      div.actions {\n        display: inline;\n      }\n\n      .round-top {\n        -webkit-border-top-left-radius: 5px;\n        -webkit-border-top-right-radius: 5px;\n        -moz-border-radius: 5px 5px 0px 0px;\n        border-radius: 5px 5px 0px 0px;\n      }\n\n      .round-bottom {\n        -webkit-border-bottom-left-radius: 5px;\n        -webkit-border-bottom-right-radius: 5px;\n        -moz-border-radius: 0px 0px 5px 5px;\n        border-radius: 0px 0px 5px 5px;\n      }\n\n      .round-left {\n        -webkit-border-top-left-radius: 5px;\n        -webkit-border-bottom-left-radius: 5px;\n        -moz-border-radius: 5px 0px 0px 5px;\n        border-radius: 5px 0px 0px 5px;\n      }\n\n      .round-right {\n        -webkit-border-top-right-radius: 5px;\n        -webkit-border-bottom-right-radius: 5px;\n        -moz-border-radius: 0px 5px 5px 0px;\n        border-radius: 0px 5px 5px 0px;\n      }\n\n      .round-all {\n        -webkit-border-top-right-radius: 5px;\n        -webkit-border-top-left-radius: 5px;\n        -webkit-border-bottom-right-radius: 5px;\n        -webkit-border-bottom-left-radius: 5px;\n        -moz-border-radius: 5px;\n        border-radius: 5px;\n      }\n    </style>\n  </head>\n  <body>\n    <div class="g-doc">\n      ' % (
+        escape(context.call(l__, 'Live Settings Admin')), 
+    )
+    if l_flash_msg:
+        if 0: yield None
+        yield u'\n      <div class="ae-message"><strong>%s</strong></div>\n      ' % (
+            escape(l_flash_msg), 
+        )
+    yield u'\n      <p>%s</p>\n      <div class="ae-message">\n        <div class="ae-alert">\n          <strong>%s</strong>\n        </div>\n      </div>\n      ' % (
+        escape(context.call(l__, "This page show your application's live settings.")), 
+        escape(context.call(l__, 'It may take a few minutes for changes to propagate to all application instances.')), 
+    )
+    l_object = l_form = missing
+    t_3 = 1
+    for (l_object, l_form) in l_form_list:
+        if 0: yield None
+        yield u'\n        '
+        def macro():
+            t_4 = []
+            l_to_local_timezone = context.resolve('to_local_timezone')
+            pass
+            t_4.append(
+                u'\n          ', 
+            )
+            l_utime = context.call(l_to_local_timezone, environment.getattr(l_object, 'utime'))
+            t_4.extend((
+                u'\n          <div class="ae-item">\n            <div class="ae-item-details">\n              <div class="key">', 
+                escape(context.call(environment.getattr(context.call(environment.getattr(l_object, 'key')), 'name'))), 
+                u' ', 
+                escape(t_1(context.call(environment.getattr(environment.getitem(l_form, 'key_name'), 'hidden')))), 
+                u'</div>\n              <div class="value">', 
+                escape(t_1(context.call(environment.getattr(environment.getitem(l_form, 'value'), 'render')))), 
+                u' <input class="goog-button" type="submit" name="submit" value="', 
+                escape(context.call(l__, 'Update')), 
+                u'"> <input class="goog-button" type="submit" name="delete" value="', 
+                escape(context.call(l__, 'Delete')), 
+                u'"></div>\n              <div>', 
+                escape(context.call(l__, 'Last Updated:')), 
+                u' ', 
+                escape(t_2('%s/%s/%s %s:%s', environment.getattr(l_utime, 'year'), environment.getattr(l_utime, 'month'), environment.getattr(l_utime, 'day'), environment.getattr(l_utime, 'hour'), environment.getattr(l_utime, 'minute'))), 
+                u'</div>\n            </div>\n          </div>\n        ', 
+            ))
+            return Markup(concat(t_4))
+        caller = Macro(environment, macro, None, (), (), False, False, False)
+        yield context.call(l_form, caller=caller)
+        yield u'\n      '
+        t_3 = 0
+    if t_3:
+        if 0: yield None
+        yield u'\n      <div class="ae-message">\n        <div class="ae-alert">%s</div>\n        %s\n      </div>\n      ' % (
+            escape(context.call(l__, 'There are no live settings currently set for this application.')), 
+            escape(context.call(l__, 'Your application may be working using default values set in your application. You can override any default settings you are using by setting it here.')), 
+        )
+    l_object = l_form = missing
+    yield u'\n      '
+    def macro():
+        t_5 = []
+        l_new_form = context.resolve('new_form')
+        pass
+        t_5.extend((
+            u'\n      <div class="ae-item last">\n        <div class="ae-item-details">\n          <span>', 
+            escape(t_1(context.call(environment.getattr(environment.getitem(l_new_form, 'key_name'), 'label')))), 
+            u': ', 
+            escape(t_1(context.call(environment.getattr(environment.getitem(l_new_form, 'key_name'), 'render')))), 
+            u'</span>\n          <span>', 
+            escape(t_1(context.call(environment.getattr(environment.getitem(l_new_form, 'value'), 'label')))), 
+            u': ', 
+            escape(t_1(context.call(environment.getattr(environment.getitem(l_new_form, 'value'), 'render')))), 
+            u'</span>\n          <span>&nbsp;</span>\n          <span><input class="goog-button" type="submit" name="submit" value="', 
+            escape(context.call(l__, 'Add')), 
+            u'"></span>\n        </div>\n      </div>\n      ', 
+        ))
+        return Markup(concat(t_5))
+    caller = Macro(environment, macro, None, (), (), False, False, False)
+    yield context.call(l_new_form, caller=caller)
+    yield u'\n    </div>\n  </body>\n</html>'
+
+blocks = {}
+debug_info = '1=13&3=14&136=16&137=19&138=21&139=22&142=23&145=27&146=30&147=37&150=40&151=44&152=50&146=57&155=58&156=62&158=63&159=64&161=67&162=68&165=74&166=78&168=82&162=87&171=88'
