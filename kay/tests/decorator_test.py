@@ -94,14 +94,9 @@ class CronOnlyTestCase(GAETestBase):
     self.assertTrue(response.data == "OK")
 
   def test_cron_only_failure(self):
-    response = self.client.get("/cron")      
+    response = self.client.get("/cron")
     self.assertEqual(response.status_code, 403)
 
-  def test_cron_only(self):
-    response = self.client.get("/cron",
-            headers=(('X-AppEngine-Cron', 'true'),))
-    self.assertEqual(response.status_code, 200)
-    self.assertTrue(response.data == "OK")
 
 class CronOnlyDebugTestCase(GAETestBase):
 
@@ -112,8 +107,12 @@ class CronOnlyDebugTestCase(GAETestBase):
     self.client = Client(app, BaseResponse)
 
   def test_cron_only_failure(self):
-    response = self.client.get("/cron")      
-    self.assertEqual(response.status_code, 403)
+    from kay.utils import is_dev_server
+    response = self.client.get("/cron")
+    if is_dev_server():
+      self.assertEqual(response.status_code, 200)
+    else:
+      self.assertEqual(response.status_code, 403)
 
   def test_cron_only(self):
     response = self.client.get("/cron",
