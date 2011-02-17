@@ -394,7 +394,8 @@ class KayApp(object):
   def handle_uncaught_exception(self, request, exc_info):
     import os
     if 'SERVER_SOFTWARE' in os.environ and \
-          os.environ['SERVER_SOFTWARE'].startswith('Dev'):
+          os.environ['SERVER_SOFTWARE'].startswith('Dev') and \
+          self.app_settings.DEBUG:
       raise
     else:
       subject = 'Error %s: %s' % (request.remote_addr, request.path)
