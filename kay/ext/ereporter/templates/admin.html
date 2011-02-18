@@ -111,7 +111,7 @@
       {% if exceptions %}
       {% block pagination_top %}
       <div class="ae-paginate ae-table-caption">
-        {% if page.has_previous %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.previous_page_number }}">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</a> {% else %}<span class="ae-disabled">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</span> {% endif %}<b>{{ page.start_index }} - {{ page.end_index }}</b>{% if page.has_next %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.next_page_number() }}">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</a>{% else %} <span class="ae-disabled">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</span>{% endif %}
+        {% if page.has_previous %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.previous_page_number }}">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</a> {% else %}<span class="ae-disabled">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</span> {% endif %}<b>{{ page.start_index }} - {{ page.end_index }}</b>{% if page.has_next %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.next_page_number }}">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</a>{% else %} <span class="ae-disabled">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</span>{% endif %}
       </div>
       {% endblock %}
       {% for exception in exceptions %}
@@ -143,7 +143,7 @@
       {% endfor %}
       {% block pagination_bottom %}
       <div class="ae-paginate ae-table-caption">
-        {% if page.has_previous %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.previous_page_number }}">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</a> {% else %}<span class="ae-disabled">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</span> {% endif %}<b>{{ page.start_index }} - {{ page.end_index }}</b>{% if page.has_next %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.next_page_number() }}">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</a>{% else %} <span class="ae-disabled">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</span>{% endif %}
+        {% if page.has_previous %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.previous_page_number }}">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</a> {% else %}<span class="ae-disabled">‹ {{ _("Prev %(per_page)s")|format(per_page=paginator.per_page) }}</span> {% endif %}<b>{{ page.start_index }} - {{ page.end_index }}</b>{% if page.has_next %} <a class="novisit" href="?all={{ "1" if show_all else "0" }}&page={{ page.next_page_number }}">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</a>{% else %} <span class="ae-disabled">{{ _("Next %(per_page)s")|format(per_page=paginator.per_page) }} ›</span>{% endif %}
       </div>
       {% endblock %}
       {% else %}

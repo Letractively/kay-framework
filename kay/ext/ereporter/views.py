@@ -38,22 +38,22 @@ def isTrue(val):
   return val == 'true' or val == 't' or val == '1' or val == 'yes'
 
 def GetQuery(query_date=None, major_version=None,
-                     minor_version=None, order=None):
-    """Creates a query object that will retrieve the appropriate exceptions.
+             minor_version=None, order=None):
+  """Creates a query object that will retrieve the appropriate exceptions.
 
-    Returns:
-      A query to retrieve the exceptions required.
-    """
-    q = ExceptionRecord.all()
-    if query_date:
-        q.filter('date =', query_date)
-    if major_version:
-        q.filter('major_version =', major_version)
-    if minor_version:
-      q.filter('minor_version =', minor_version)
-    if order:
-      q.order(order)
-    return q
+  Returns:
+    A query to retrieve the exceptions required.
+  """
+  q = ExceptionRecord.all()
+  if query_date:
+      q.filter('date =', query_date)
+  if major_version:
+      q.filter('major_version =', major_version)
+  if minor_version:
+    q.filter('minor_version =', minor_version)
+  if order:
+    q.order(order)
+  return q
 
 class ReportGenerator(BaseHandler):
   """Handler class to generate and email an exception report."""
@@ -78,11 +78,11 @@ class ReportGenerator(BaseHandler):
     max_results = int(self.request.args.get('max_results',
                                                 self.DEFAULT_MAX_RESULTS))
     query_args = {
-        'query_date': yesterday,
-        'major_version': major_version,
+      'query_date': yesterday,
+      'major_version': major_version,
     }
     if version_filter.lower() == 'latest':
-        query_args['minor_version'] = minor_version
+      query_args['minor_version'] = minor_version
 
     try:
       exceptions = GetQuery(order='-minor_version', **query_args).fetch(max_results)
@@ -97,14 +97,14 @@ class ReportGenerator(BaseHandler):
                     in itertools.groupby(exceptions, lambda e: e.minor_version)]
 
       template_values = {
-          'version_filter': version_filter,
-          'version_count': len(versions),
-          'exception_count': sum(len(excs) for _, excs in versions),
-          'occurrence_count': sum(y.count for x in versions for y in x[1]),
-          'app_id': app_id,
-          'major_version': major_version,
-          'date': yesterday,
-          'versions': versions,
+        'version_filter': version_filter,
+        'version_count': len(versions),
+        'exception_count': sum(len(excs) for _, excs in versions),
+        'occurrence_count': sum(y.count for x in versions for y in x[1]),
+        'app_id': app_id,
+        'major_version': major_version,
+        'date': yesterday,
+        'versions': versions,
       }
       report = render_to_string('ereporter/report.html', template_values)
       report_text = render_to_string('ereporter/report.txt', template_values)
@@ -136,41 +136,41 @@ class ReportGenerator(BaseHandler):
 report_generator = cron_only(ReportGenerator())
 
 def report_admin(request):
-    from kay.utils import render_to_response
-    from kay.utils.paginator import InfinitePaginator
+  from kay.utils import render_to_response
+  from kay.utils.paginator import Paginator
 
-    version_filter = request.args.get('versions', 'all')
-    report_date = request.args.get('date', None)
-    if report_date:
-      yesterday = datetime.date(*[int(x) for x in report_date.split('-')])
-    else:
-      yesterday = None
+  version_filter = request.args.get('versions', 'all')
+  report_date = request.args.get('date', None)
+  if report_date:
+    yesterday = datetime.date(*[int(x) for x in report_date.split('-')])
+  else:
+    yesterday = None
 
-    app_id = os.environ['APPLICATION_ID']
-    version = os.environ['CURRENT_VERSION_ID']
-    major_version, minor_version = version.rsplit('.', 1)
-    minor_version = int(minor_version)
+  app_id = os.environ['APPLICATION_ID']
+  version = os.environ['CURRENT_VERSION_ID']
+  major_version, minor_version = version.rsplit('.', 1)
+  minor_version = int(minor_version)
 
-    query_args = {
-        'major_version': major_version,
-    }
-    if yesterday:
-        query_args['query_date'] = yesterday
+  query_args = {
+    'major_version': major_version,
+  }
+  if yesterday:
+    query_args['query_date'] = yesterday
 
-    try:
-      exceptions = GetQuery(order='-date', **query_args)
-      paginator = InfinitePaginator(exceptions, 15)
-      page = paginator.page(request.args.get('page', 1))
-    except db.NeedIndexError:
-      exceptions = GetQuery(**query_args)
-      paginator = InfinitePaginator(exceptions, 15)
-      page = paginator.page(request.args.get('page', 1))
+  try:
+    exceptions = GetQuery(order='-date', **query_args)
+    paginator = Paginator(exceptions, 2)
+    page = paginator.page(request.args.get('page', 1))
+  except db.NeedIndexError:
+    exceptions = GetQuery(**query_args)
+    paginator = Paginator(exceptions, 2)
+    page = paginator.page(request.args.get('page', 1))
 
-    return render_to_response("ereporter/admin.html", {
-        'version_filter': version_filter,
-        'app_id': app_id,
-        'major_version': major_version,
-        'exceptions': page.object_list,
-        'paginator': paginator,
-        'page': page,
-    })
+  return render_to_response("ereporter/admin.html", {
+    'version_filter': version_filter,
+    'app_id': app_id,
+    'major_version': major_version,
+    'exceptions': page.object_list,
+    'paginator': paginator,
+    'page': page,
+  })
