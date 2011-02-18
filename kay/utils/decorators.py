@@ -184,7 +184,7 @@ class memcache_property(object):
 
       class Foo(db.Model):
 
-        @memcached_property(lambda o: o.key().name())
+        @memcached_property(lambda o: "Foo:%s:foo" % o.key().name())
         def foo(self):
           # calculate something important here
           return 42

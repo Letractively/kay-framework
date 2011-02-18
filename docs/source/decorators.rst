@@ -77,3 +77,22 @@ Utility Decorators
                 # ...
                 return
             return new_func
+
+.. function:: memcache_property(key_f, expire=0)
+
+   A decorator that converts a function into a lazy property.  The
+  function wrapped is called the first time to retrieve the result
+  and then that calculated result is used the next time you access
+  the value. The decorator takes one manditory key factory function
+  that takes the owning object as it's only argument and returns
+  a key to be used to store in memcached::
+
+      class Foo(db.Model):
+
+        @memcached_property(lambda o: "Foo:%s:foo" % o.key().name())
+        def foo(self):
+          # calculate something important here
+          return 42
+
+  The class has to have a `__dict__` in order for this property to
+  work.
