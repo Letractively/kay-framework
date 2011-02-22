@@ -16,13 +16,19 @@ kay.ext.appstats
 
 .. module:: kay.ext.appstats
 
-kay.ext.appstats is a package that includes utilities to allow you to use appstats easily.
+kay.ext.appstats is a package that includes utilities to allow you to use
+appstats easily.
 
-For more information about appstats, please see the `Appstats for Python <http://code.google.com/intl/en/appengine/docs/python/tools/appstats.html>`_ page in the Google Appengine SDK Documentation.
+For more information about appstats, please see the `Appstats for Python
+<http://code.google.com/intl/en/appengine/docs/python/tools/appstats.html>`_
+page in the Google Appengine SDK Documentation.
 
 .. class:: kay.ext.appstats.middleware.AppStatsMiddleware 
 
-The appstats packages includes the ``AppStatsMiddleware`` class which will enable appstats for your application. Simply add ``kay.ext.appstats.middleware.AppStatsMiddleware`` to your :attr:`settings.MIDDLEWARE_CLASSES` to enable the middleware.
+The appstats packages includes the ``AppStatsMiddleware`` class which will
+enable appstats for your application. Simply add
+``kay.ext.appstats.middleware.AppStatsMiddleware`` to your
+:attr:`settings.MIDDLEWARE_CLASSES` to enable the middleware.
 
 .. code-block:: python
 
@@ -32,7 +38,8 @@ The appstats packages includes the ``AppStatsMiddleware`` class which will enabl
         # ...
     )
 
-You will also need to enable the appstats admin interface in your ``app.yaml`` as explained in the SDK documentation.
+You will also need to enable the appstats admin interface in your ``app.yaml``
+as explained in the SDK documentation.
 
 .. code-block:: yaml
 
@@ -147,7 +154,10 @@ nuke is a small tool for wipe all of your data in one action.
 
 .. module:: kay.ext.nuke
 
-To use kay.ext.nuke, firstly you need to retrieve bulkupdate copy from `github repository <http://github.com/arachnid/bulkupdate>`_, put it under your project directory, add ``kay.ext.nuke`` to your :attr:`settings.INSTALLED_APPS` variable, and add these few lines to your ``app.yaml`` file.
+To use kay.ext.nuke, firstly you need to retrieve bulkupdate copy from `github
+repository <http://github.com/arachnid/bulkupdate>`_, put it under your project
+directory, add ``kay.ext.nuke`` to your :attr:`settings.INSTALLED_APPS`
+variable, and add these few lines to your ``app.yaml`` file.
 
 .. code-block:: yaml
 
@@ -168,8 +178,8 @@ To use kay.ext.nuke, firstly you need to retrieve bulkupdate copy from `github r
     login: admin
 
 
-Then you will see ``Nuke`` menu on your admin console, or you can just visit ``/_ah/nuke`` directly.
-
+Then you will see ``Nuke`` menu on your admin console, or you can just visit
+``/_ah/nuke`` directly.
 
 kay.ext.gaema
 =============
@@ -226,19 +236,18 @@ kay.ext.gaema.decorators package has following decorators.
 
 .. module:: kay.ext.gaema.decorators
 
-.. function:: gaema_login_required(*services)
+.. function:: gaema_login_required(\*services)
 
   A decorator for restricting access to a view only to users who is
   signed in with particular social service. You can pass any number of
   service.
 
 
-Here is a simple example that shows how to authenticate users with
-twitter OAuth. Firstly, you need to register your application on
-`Twitter's website <http://twitter.com/apps>`_, and set a key and
-secret from twitter to :attr:`settings.GAEMA_SECRETS` as well as
-:attr:`settings.INSTALLED_APPS`, and activate
-``kay.sessions.middleware.SessionMiddleware`` as follows:
+Here is a simple example that shows how to authenticate users with twitter
+OAuth. Firstly, you need to register your application on `Twitter's website
+<http://twitter.com/apps>`_, and set a key and secret from twitter to
+:attr:`settings.GAEMA_SECRETS` as well as :attr:`settings.INSTALLED_APPS`, and
+activate ``kay.sessions.middleware.SessionMiddleware`` as follows:
 
 .. code-block:: python
 
@@ -293,4 +302,93 @@ Here is an example for views:
 			      {'user': user,
 			       'gaema_logout_url': gaema_logout_url})
 
+kay.ext.live_settings
+======================
 
+.. module:: kay.ext.live_settings
+
+Many applications have global settings which may need to be tweaked or modified
+for performance and/or business reasons. However, modifying the settings.py
+file requires developers to redeploy their application which can cause latency
+spikes and other problems for high volume sites.
+
+Live settings is a way for developers to create global application settings
+that can be changed without redeploying the application. This can allow for
+certain things like turning on and off appstats or other middleware without
+redeploying an application.
+
+The Live Settings extension is installed by adding ``kay.ext.live_settings`` to
+your :attr:`settings.INSTALLED_APPS`.
+
+.. code-block:: python
+
+    INSTALLED_APPS = (
+        # ...
+        'kay.ext.live_settings',
+        # ...
+    )
+
+Live settings are string key to string value key-value pairs. These key-value
+pairs are stored stored persistenly in the datastore and cached in instance
+memory and in memcached. However, because of this caching settings values may
+take some time to propagate to all of your application instances.  Values in
+instance memory time out every minute by default. Values in memcached are set
+when settings are modified, and never expire (Though memcached keys can be
+deleted due to lack of memory). This creates a tiered caching approach which
+allows applications to retrieve settings values as quickly as possible while
+still allowing them to be modified.
+
+Getting and setting a setting key is easy:
+
+.. code-block:: python
+
+    from kay.ext.live_settings import live_settings
+
+    value = live_settings.get("my.settings.key", "default_value")
+
+    live_settings.set("my.settings.key", "new-value")
+
+Settings can also be retrieved and set in bulk:
+
+.. code-block:: python
+
+    # Get settings in batch
+    value = live_settings.get_multi(["my.settings.key", "my.other.setting"])
+    
+    my_setting = value["my.settings.key"]
+    other_setting = value["my.other.setting"]
+
+    # Set settings in batch
+    live_settings.set_multi({
+        "my.settings.key": "new_value",
+        "my.other.setting": "other_value",
+    })
+
+Modifications to keys can be done via the Live Settings custom admin page as
+well.  It may take a few minutes for settings to propagate to all application
+instances.
+
+.. image:: images/live_settings.png
+
+The custom admin page is enabled by adding ``kay.ext.live_settings`` to your
+:attr:`settings.APP_MOUNT_POINTS` and adding the custom admin page to the
+``admin_console`` section of your ``app.yaml``.
+
+**settings.py**:
+
+.. code-block:: python
+
+    APP_MOUNT_POINTS = {
+        # ...
+        'kay.ext.live_settings': '/_kay/live_settings/',
+        # ...
+    }
+
+**app.yaml**:
+
+.. code-block:: yaml
+
+    admin_console:
+      pages:
+      - name: Live Settings Admin
+        url: /_kay/live_settings/admin 
