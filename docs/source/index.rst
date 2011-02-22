@@ -25,6 +25,7 @@ Contents:
   views
   templates
   utils
+  pagination
   decorators
   auth
   session

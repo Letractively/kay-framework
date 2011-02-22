@@ -10,7 +10,7 @@ A sample of kay settings.
 """
 
 DEFAULT_TIMEZONE = 'Asia/Tokyo'
-DEBUG = False
+DEBUG = True
 PROFILE = False
 SECRET_KEY = 'ReplaceItWithSecretString'
 SESSION_PREFIX = 'gaesess:'
@@ -30,11 +30,12 @@ DEFAULT_LANG = 'en'
 
 INSTALLED_APPS = (
   'kay.auth',
-  'kay.tests.regressiontests.server_error_testapp',
+  'kay.ext.ereporter',
+  'kay.tests.ereporter_testapp',
 )
 
 APP_MOUNT_POINTS = {
-  'kay.tests.regressiontests.server_error_testapp': '/',
+  'kay.tests.ereporter_testapp': '/',
 }
 
 # You can remove following settings if unnecessary.
