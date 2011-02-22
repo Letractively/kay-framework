@@ -46,6 +46,11 @@ as explained in the SDK documentation.
     builtins:
     - appstats: on
 
+If using the :mod:`kay.ext.live_settings` application, the AppStatsMiddleware
+can be disabled without redeploying your application. You can set the setting
+``kay.ext.appstats.middleware`` to ``off`` to disable the middleware and set it
+to ``on`` to enable it.
+
 kay.ext.ereporter
 ======================
 
