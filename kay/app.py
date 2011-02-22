@@ -101,6 +101,8 @@ class KayApp(object):
     self._request_middleware = self._response_middleware = \
         self._view_middleware = self._exception_middleware = None
     self.auth_backend = None
+    self.use_ereporter = 'kay.ext.ereporter' in app_settings.INSTALLED_APPS
+    self.init_ereporter()
 
   @property
   def jinja2_env(self):
@@ -198,6 +200,19 @@ class KayApp(object):
       self.auth_backend = klass()
     self.views = views
     self.url_map = url_map
+
+  def init_ereporter(self):
+    if self.use_ereporter:
+      import logging
+      from google.appengine.ext import ereporter
+
+      # Logging handlers are global so we need to make sure the logger
+      # isn't registered already.
+      logger = logging.getLogger()
+      for handler in logger.handlers:
+        if isinstance(handler, ereporter.ExceptionRecordingHandler):
+          return
+      ereporter.register_logger()
 
   def init_jinja2_environ(self):
     """
@@ -395,21 +410,31 @@ class KayApp(object):
     import os
     if 'SERVER_SOFTWARE' in os.environ and \
           os.environ['SERVER_SOFTWARE'].startswith('Dev'):
-      raise
+      if self.use_ereporter and not self.app_settings.DEBUG:
+        logging.exception("An Unhandled Exception Occurred.")
+        return InternalServerError()
+      else:
+        raise
     else:
-      subject = 'Error %s: %s' % (request.remote_addr, request.path)
       try:
         from kay.utils import repr
         request_repr = repr.dump(request)
       except Exception, e:
         request_repr = "Request repr() unavailable"
       message = "%s\n\n%s" % (self._get_traceback(exc_info), request_repr)
-      logging.error(message)
+
+      if self.use_ereporter:
+        logging.exception("An Unhandled Exception Occurred.")
+      else:
+        logging.error(message)
+
       if self.app_settings.DEBUG:
         error = InternalServerError(message.replace("\n", "<br/>\n"))
         return error.get_response(request.environ)
       else:
-        mail.mail_admins(subject, message, fail_silently=True)
+        if not self.use_ereporter:
+          subject = 'Error %s: %s' % (request.remote_addr, request.path)
+          mail.mail_admins(subject, message, fail_silently=True)
         # TODO: Return an HttpResponse that displays a friendly error message.
         return InternalServerError().get_response(request.environ)
 
