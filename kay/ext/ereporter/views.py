@@ -159,11 +159,11 @@ def report_admin(request):
 
   try:
     exceptions = GetQuery(order='-date', **query_args)
-    paginator = Paginator(exceptions, 2)
+    paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))
   except db.NeedIndexError:
     exceptions = GetQuery(**query_args)
-    paginator = Paginator(exceptions, 2)
+    paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))
 
   return render_to_response("ereporter/admin.html", {
