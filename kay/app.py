@@ -409,12 +409,10 @@ class KayApp(object):
   def handle_uncaught_exception(self, request, exc_info):
     import os
     if 'SERVER_SOFTWARE' in os.environ and \
-          os.environ['SERVER_SOFTWARE'].startswith('Dev'):
-      if self.use_ereporter and not self.app_settings.DEBUG:
-        logging.exception("An Unhandled Exception Occurred.")
-        return InternalServerError()
-      else:
-        raise
+          os.environ['SERVER_SOFTWARE'].startswith('Dev') and \
+          self.app_settings.DEBUG:
+      # It's intended to invoke werkzeug's debugger
+      raise
     else:
       try:
         from kay.utils import repr

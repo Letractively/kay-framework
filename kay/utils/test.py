@@ -4,7 +4,6 @@ import sys
 from werkzeug import Client as WerkZeugClient
 from werkzeug import EnvironBuilder
 
-from kay.management.test import setup_env
 from kay.utils import local
 from jinja2 import Template
 
@@ -60,13 +59,17 @@ class Client(WerkZeugClient):
     old_env = os.environ.copy()
     old_cwd = os.getcwd()
 
+    stripped_environ = {}
+    for key in environ.keys():
+      if isinstance(environ[key], basestring):
+        stripped_environ[key] = environ[key]
     try:
         # Add the variables for the current environment to
         # the OS environment to mimic the appengine CGI environment.
         # Don't clear the os.environ since we have set up a number
         # of variables for the environment already. We only want to
         # add variables pertaining to the current request.
-        os.environ.update(environ)
+        os.environ.update(stripped_environ)
         # Add a dummy value for the appengine specific CGI variable.
         os.environ["PATH_TRANSLATED"] = "main.py"
 
@@ -81,7 +84,6 @@ class Client(WerkZeugClient):
         # Make sure we reset the os environment to the old value.
         os.environ.clear()
         os.environ.update(old_env)
-        os.chdir(old_cwd)
 
   def test_login_or_logout(self, method, target_url='/', **kwargs):
     auth_backend = None
