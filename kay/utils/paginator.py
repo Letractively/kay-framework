@@ -139,4 +139,8 @@ class Page(object):
     Returns the 1-based index of the last object on this page,
     relative to total objects found (hits).
     """
-    return self.number * self.paginator.per_page
+    object_num = len(self.object_list)
+    if object_num >= self.paginator.per_page:
+      return self.number * self.paginator.per_page
+    else:
+      return ((self.number - 1) * self.paginator.per_page) + object_num
