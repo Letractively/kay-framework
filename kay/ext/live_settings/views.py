@@ -3,9 +3,7 @@
 live_settings.views
 """
 
-import logging
-
-from werkzeug import redirect
+from werkzeug import redirect, url_encode
 from werkzeug.contrib.securecookie import SecureCookie
 
 from kay.utils import (
@@ -16,7 +14,7 @@ from kay.utils import (
 from kay.i18n import lazy_gettext as _
 from kay.ext.live_settings import live_settings
 from kay.ext.live_settings.models import KayLiveSetting
-from kay.ext.live_settings.forms import KayLiveSettingForm
+from kay.ext.live_settings.forms import KayLiveSettingForm, KayNamespaceForm
 
 from kay.conf import settings
 
@@ -36,10 +34,20 @@ def _get_flash_msg(request):
     return None
 
 def admin(request):
-  object_list = list(KayLiveSetting.all())
+  nsform = None
+  namespace = ''
+  if 'namespace' in request.args:
+    nsform = KayNamespaceForm()
+    if nsform.validate(request.args):
+      namespace = nsform['namespace'] or ''
+    nsform = nsform.as_widget()
+
+  object_list = list(KayLiveSetting.all(namespace=namespace))
   forms = dict(
-      map(lambda s: (s.key().name(), KayLiveSettingForm(instance=s, initial={"key_name": s.key().name()})),
-          object_list)
+      map(lambda s: (s.key().name(), KayLiveSettingForm(instance=s, initial={
+          "key_name": s.key().name(),
+          "namespace": namespace,
+      })), object_list)
   )
 
   if (request.method == "POST"):
@@ -53,24 +61,31 @@ def admin(request):
             _set_flash_msg(request, _("Deleted the setting '%(key)s'" % {
               'key': key_name,
             }))
-            live_settings.delete(form['key_name'])
+            live_settings.delete(form['key_name'], namespace=namespace)
             if key_name in forms:
               del forms[key_name]
           else:
             _set_flash_msg(request, _("Updated the setting '%(key)s'" % {
               'key': key_name,
             }))
-            live_settings.delete(form['key_name'])
             forms[key_name] = form
             form.instance = live_settings.set(
               form['key_name'],
               form['value'],
+              namespace=namespace,
             )
-          return redirect(url_for('live_settings/admin'))
+          return redirect(
+            "%s?%s" % (
+              url_for('live_settings/admin'),
+              url_encode(request.args),
+            ),
+          )
   new_form = KayLiveSettingForm()
   return render_to_response('live_settings/admin.html', {
       'flash_msg': _get_flash_msg(request),
       'to_local_timezone': to_local_timezone, # ensure we have this function
+      'nsform': nsform,
+      'namespace': namespace,
       'form_list': map(lambda f: (f.instance, f.as_widget()), forms.values()),
       'new_form': new_form.as_widget(),
   })
