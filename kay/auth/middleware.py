@@ -81,3 +81,6 @@ class GoogleAuthenticationMiddleware(object):
   def process_request(self, request):
     request.__class__.user = LazyGoogleUser()
     return None
+if 'kay.auth.middleware.GoogleAuthenticationMiddleware' in settings.MIDDLEWARE_CLASSES:
+  import logging
+  logging.warn("Deprecation warning: GoogleAuthenticationMiddleware is obsolete. Please migrate it to AuthenticationMiddleware and GoogleBackend combination. See this URL for more details: http://kay-docs.shehas.net/auth.html#using-google-account-authentication")
