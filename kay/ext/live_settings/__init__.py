@@ -19,6 +19,8 @@ import time
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
+from google.appengine.api import namespace_manager
+
 _missing = type('MissingType', (), {'__repr__': lambda x: 'missing'})()
 
 _DEFAULT_TTL = 60
@@ -55,94 +57,159 @@ class LiveSettings(object):
   def __init__(self):
     self._settings_cache = {}
 
-  def set(self, key, value, expire=_DEFAULT_TTL):
+  def _set_local_cache(self, key, value, ttl=_DEFAULT_TTL, namespace=None):
+    value = (value, int(time.time())+ttl, ttl)
+
+    if namespace not in self._settings_cache:
+      self._settings_cache[namespace] = {}
+    self._settings_cache[namespace][key] = value
+
+  def _get_local_cache(self, key, default=_missing, namespace=None):
+    data = self._settings_cache.get(namespace, {}).get(key, None)
+    if data:
+      value,expire,ttl = data
+      if expire < time.time():
+        return default
+      else:
+        return value
+    else:
+      return default
+
+  def _del_local_cache(self, key, namespace=None):
+    if (namespace in self._settings_cache and 
+        key in self._settings_cache[namespace]):
+      del self._settings_cache[namespace][key]
+
+  def set(self, key, value, expire=_DEFAULT_TTL, namespace=None):
     from kay.ext.live_settings.models import KayLiveSetting
+    
+    old_namespace = namespace_manager.get_namespace()
+    try:
+      if namespace is not None:
+        namespace_manager.set_namespace(namespace)
 
-    new_setting = KayLiveSetting(
-        key_name=key,
-        ttl=expire,
-        value=value,
-    )
-    new_setting.put()
+      new_setting = KayLiveSetting(
+          key_name=key,
+          ttl=expire,
+          value=value,
+      )
+      new_setting.put()
 
-    # Set the memcached key to never expire. It only expires
-    # if it is evicted from memory. TTLs are handled by the 
-    # in-memory cache.
-    memcache.set("kay:live:%s" % key, (value, expire))
-    self._settings_cache[key] = (value, int(time.time())+expire, expire)
+      # Set the memcached key to never expire. It only expires
+      # if it is evicted from memory. TTLs are handled by the 
+      # in-memory cache.
+      memcache.set("kay:live:%s" % key, (value, expire))
+       
+      self._set_local_cache(key, value, ttl=expire, namespace=namespace)
+    finally:
+      if namespace is not None:
+        namespace_manager.set_namespace(old_namespace)
 
     return new_setting
 
-  def set_multi(self, data, expire=_DEFAULT_TTL):
+  def set_multi(self, data, expire=_DEFAULT_TTL, namespace=None):
     from kay.ext.live_settings.models import KayLiveSetting
 
-    data_items = data.items()
-    db.put(map(lambda k,v: KayLiveSetting(key_name=k, ttl=expire, value=v),
-        data_items))
-    memcache.set_multi(dict(map(lambda k,v: ("kay:live:%s" % k, (v,expire)),data_items)))
+    old_namespace = namespace_manager.get_namespace()
+    try:
+      if namespace is not None:
+        namespace_manager.set_namespace(namespace)
 
-    expire_time = int(time.time())+expire
-    for key, value in data_items:
-      self._settings_cache[key] = (value, expire_time, expire)
+      data_items = data.items()
+      db.put(map(lambda k,v: KayLiveSetting(key_name=k, ttl=expire, value=v),
+          data_items))
+      memcache.set_multi(dict(map(lambda k,v: (
+          "kay:live:%s" % k, (v,expire)
+      ),data_items)))
+  
+      for key, value in data_items:
+        self._set_local_cache(key, value, ttl=expire, namespace=namespace)
+    finally:
+      if namespace is not None:
+        namespace_manager.set_namespace(old_namespace)
 
-  def get(self, key, default=None):
+  def get(self, key, default=None, namespace=None):
     from kay.ext.live_settings.models import KayLiveSetting
 
-    set_dictcache = False
-    set_memcache = False
+    old_namespace = namespace_manager.get_namespace()
+    try:
+      if namespace is not None:
+        namespace_manager.set_namespace(namespace)
 
-    value,expire,ttl = self._settings_cache.get(key,
-                                        (_missing, _missing, _missing))
-
-    if value is _missing or expire < time.time():
-      set_dictcache = True
-      value = memcache.get("kay:live:%s" % key)
-      if value:
-        value,ttl = value
+      set_dictcache = False
+      set_memcache = False
+  
+      value = self._get_local_cache(key, namespace=namespace)
+      expire = _missing
+      ttl = _missing
+  
+      if value is _missing:
+        set_dictcache = True
+        value = memcache.get("kay:live:%s" % key)
+        if value:
+          value,ttl = value
+        else:
+          value,ttl = (_missing, _missing)
+      if value is _missing:
+        set_memcache = True
+        entity = KayLiveSetting.get_by_key_name(key)
+        if entity:
+          value = entity.value or _missing
+          ttl = entity.ttl or _missing
+  
+      if value is _missing:
+        return default
       else:
-        value,ttl = (_missing, _missing)
-    if value is _missing:
-      set_memcache = True
-      entity = KayLiveSetting.get_by_key_name(key)
-      if entity:
-        value = entity.value or _missing
-        ttl = entity.ttl or _missing
+        if ttl is None or ttl is _missing:
+          ttl = _DEFAULT_TTL 
+        if set_dictcache:
+          self._set_local_cache(key, value, ttl=ttl, namespace=namespace)
+        if set_memcache:
+          memcache.set("kay:live:%s" % key, (value, ttl))
+  
+        return value
+    finally:
+      if namespace is not None:
+        namespace_manager.set_namespace(old_namespace)
 
-    if value is _missing:
-      return default
-    else:
-      if ttl is None or ttl is _missing:
-        ttl = _DEFAULT_TTL 
-      if set_dictcache:
-        self._settings_cache[key] = (value, time.time()+ttl, ttl)
-      if set_memcache:
-        memcache.set("kay:live:%s" % key, (value, ttl))
-
-      return value
-
-  def get_multi(self, keys):
+  def get_multi(self, keys, namespace=None):
     # For the time being just do a bunch of gets to ensure
     # we get the same value as the get() method.
     # TODO: Make this more efficient
-    return dict(map(lambda k: (k,self.get(k)), keys))
+    return dict(map(lambda k: (k,self.get(k, namespace=namespace)), keys))
 
-  def delete(self, key):
+  def delete(self, key, namespace=None):
     from kay.ext.live_settings.models import KayLiveSetting
-    setting = KayLiveSetting.get_by_key_name(key)
-    if setting:
-        setting.delete()
-    memcache.delete("kay:live:%s" % key)
-    if key in self._settings_cache:
-        del self._settings_cache[key]
 
-  def keys(self):
+    old_namespace = namespace_manager.get_namespace()
+    try:
+      if namespace is not None:
+        namespace_manager.set_namespace(namespace)
+
+      setting = KayLiveSetting.get_by_key_name(key)
+      if setting:
+          setting.delete()
+      memcache.delete("kay:live:%s" % key)
+      self._del_local_cache(key, namespace=namespace)
+    finally:
+      if namespace is not None:
+        namespace_manager.set_namespace(old_namespace)
+
+  def keys(self, namespace=None):
     from kay.ext.live_settings.models import KayLiveSetting
-    return map(lambda e: e.key().name(), KayLiveSetting.all())
+    old_namespace = namespace_manager.get_namespace()
+    try:
+      if namespace is not None:
+        namespace_manager.set_namespace(namespace)
+      return map(lambda e: e.key().name(), KayLiveSetting.all())
+    finally:
+      if namespace is not None:
+        namespace_manager.set_namespace(old_namespace)
 
-  def items(self):
+  def items(self, namespace=None):
     # For the time being just do a multi_get to ensure 
     # we get the same value as the get() method.
     # TODO: Make this more efficient
-    return self.multi_get(self.keys()).items()
+    return self.multi_get(self.keys(namespace=namespace)).items()
 
 live_settings = LiveSettings()

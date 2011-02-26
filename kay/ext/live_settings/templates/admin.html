@@ -129,6 +129,15 @@
         -moz-border-radius: 5px;
         border-radius: 5px;
       }
+
+      ul.errors {
+        padding: 0;
+      }
+
+      ul.errors li {
+        list-style-type: none;
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -136,16 +145,39 @@
       {% if flash_msg %}
       <div class="ae-message"><strong>{{ flash_msg }}</strong></div>
       {% endif %}
-      <p>{{ _("This page show your application's live settings.") }}</p>
+      <p>{{ _("This page shows your application's live settings.") }}</p>
       <div class="ae-message">
         <div class="ae-alert">
           <strong>{{ _("It may take a few minutes for changes to propagate to all application instances.") }}</strong>
         </div>
       </div>
+      {% if nsform %}
+      <p>
+        {% call nsform(method="get") %}
+          {% if namespace %}{{ _("Using Namespace") }}: <strong>{{ namespace }}</strong>{% else %}{{ _("Using the default namespace") }}{% endif %}
+          &nbsp;&nbsp;
+          {{ nsform['namespace'].render()|safe }}
+          <input class="goog-button" type="submit" name="update_namespace" value="{{ _("Update Namespace") }}">
+          {{ nsform['namespace'].errors()|safe }}
+        {% endcall %} 
+      </p>
+      {% else %}
+      <a href="{{ url_for("live_settings/admin") }}?namespace=">{{ _("Select a different namespace") }}</a>
+      {% endif %}
+      {% call new_form() %}
+      <div class="ae-item">
+        <div class="ae-item-details">
+          <span>{{ new_form['key_name'].label()|safe }}: {{ new_form['key_name'].render()|safe }}</span>
+          <span>{{ new_form['value'].label()|safe }}: {{ new_form['value'].render()|safe }}</span>
+          <span>&nbsp;</span>
+          <span><input class="goog-button" type="submit" name="submit" value="{{ _("Add") }}"></span>
+        </div>
+      </div>
+      {% endcall %}
       {% for object, form in form_list %}
         {% call form() %}
           {% set utime = to_local_timezone(object.utime) %}
-          <div class="ae-item">
+          <div class="ae-item{% if loop.last %} last{% endif %}">
             <div class="ae-item-details">
               <div class="key">{{ object.key().name() }} {{ form['key_name'].hidden()|safe }}</div>
               <div class="value">{{ form['value'].render()|safe }} <input class="goog-button" type="submit" name="submit" value="{{ _("Update") }}"> <input class="goog-button" type="submit" name="delete" value="{{ _("Delete") }}"></div>
@@ -159,16 +191,6 @@
         {{ _("Your application may be working using default values set in your application. You can override any default settings you are using by setting it here.") }}
       </div>
       {% endfor %}
-      {% call new_form() %}
-      <div class="ae-item last">
-        <div class="ae-item-details">
-          <span>{{ new_form['key_name'].label()|safe }}: {{ new_form['key_name'].render()|safe }}</span>
-          <span>{{ new_form['value'].label()|safe }}: {{ new_form['value'].render()|safe }}</span>
-          <span>&nbsp;</span>
-          <span><input class="goog-button" type="submit" name="submit" value="{{ _("Add") }}"></span>
-        </div>
-      </div>
-      {% endcall %}
     </div>
   </body>
 </html>
