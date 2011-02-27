@@ -5,6 +5,18 @@ Copyright 2009 by Accense Technology, Inc
 
 Kay framework - Release Notes
 
+Kay-1.0.1 rc1 - xxxxxx
+=============================
+
+- Fixed an issue where error mails could not be sent to email addresses
+  that were not specified as a developer in the admin console. (Issue #50)
+- Fixed an issue were the django module could not be imported after
+  upgrading to the Appengine SDK 1.4.2 (Issue #92)
+- Fixed an issue where kay returned instances of the InternalServerError
+  exception rather than an object that subclasses BaseResponse (Issue #54,#56)
+- Fixed an issue with the remote API and the HR datastore.
+- Updated imports to the taskqueue API so they use the new import path (Issue #73)
+
 Kay-1.0.0 - July 7th 2010 
 =============================
 
