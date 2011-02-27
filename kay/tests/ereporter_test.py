@@ -7,6 +7,8 @@ from werkzeug import (
   BaseResponse, Request
 )
 
+from google.appengine.api import memcache
+
 from kay.utils.test import Client
 from kay.utils import url_for
 from kay.app import get_application
@@ -45,9 +47,8 @@ class EReporterTest(GAETestBase):
     self.assertEqual(response.status_code, 500, "Expected 500 error code.")
     self.assertEqual(ExceptionRecord.all().count(), 1)
 
-    # Must wait ten seconds for the cache to clear! Arg!
-    # TODO: Set memcached stub to a null stub
-    sleep(10); 
+    # Simulate the key expiring.
+    memcache.flush_all();
 
     response = self.client.get(url_for('ereporter_testapp/index'))
     self.assertEqual(response.status_code, 500, "Expected 500 error code.")
