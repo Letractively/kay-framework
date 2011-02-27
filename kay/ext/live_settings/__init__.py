@@ -116,11 +116,11 @@ class LiveSettings(object):
         namespace_manager.set_namespace(namespace)
 
       data_items = data.items()
-      db.put(map(lambda k,v: KayLiveSetting(key_name=k, ttl=expire, value=v),
+      db.put(map(lambda x: KayLiveSetting(key_name=x[0], ttl=expire, value=x[1]),
           data_items))
-      memcache.set_multi(dict(map(lambda k,v: (
-          "kay:live:%s" % k, (v,expire)
-      ),data_items)))
+      memcache.set_multi(dict(map(lambda x: (
+          "kay:live:%s" % x[0], (x[1],expire)
+      ), data_items)))
   
       for key, value in data_items:
         self._set_local_cache(key, value, ttl=expire, namespace=namespace)
@@ -210,6 +210,6 @@ class LiveSettings(object):
     # For the time being just do a multi_get to ensure 
     # we get the same value as the get() method.
     # TODO: Make this more efficient
-    return self.multi_get(self.keys(namespace=namespace)).items()
+    return self.get_multi(self.keys(namespace=namespace)).items()
 
 live_settings = LiveSettings()
