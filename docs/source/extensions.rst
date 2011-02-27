@@ -322,6 +322,9 @@ that can be changed without redeploying the application. This can allow for
 certain things like turning on and off appstats or other middleware without
 redeploying an application.
 
+Installation
+----------------
+
 The Live Settings extension is installed by adding ``kay.ext.live_settings`` to
 your :attr:`settings.INSTALLED_APPS`.
 
@@ -333,9 +336,12 @@ your :attr:`settings.INSTALLED_APPS`.
         # ...
     )
 
+Usage
+-----------------
+
 Live settings are string key to string value key-value pairs. These key-value
 pairs are stored stored persistenly in the datastore and cached in instance
-memory and in memcached. However, because of this caching settings values may
+memory and in memcached. However, because of this caching, settings values may
 take some time to propagate to all of your application instances.  Values in
 instance memory time out every minute by default. Values in memcached are set
 when settings are modified, and never expire (Though memcached keys can be
@@ -368,6 +374,22 @@ Settings can also be retrieved and set in bulk:
         "my.settings.key": "new_value",
         "my.other.setting": "other_value",
     })
+
+Because the live settings feature extension relies on memcache and the
+datastore live settings can be saved in seperate namespaces. By default live
+settings are stored in the default namespace regardless of the current set
+namespace. However, the namespace can be specified for each operation.
+
+.. code-block:: python
+
+    from kay.ext.live_settings import live_settings
+
+    value = live_settings.get("my.settings.key", "default_value", namespace="mynamespace")
+
+    live_settings.set("my.settings.key", "new-value", namespace="mynamespace")
+
+The Custom Admin Page
+-----------------------------------------------
 
 Modifications to keys can be done via the Live Settings custom admin page as
 well.  It may take a few minutes for settings to propagate to all application
