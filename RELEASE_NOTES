@@ -5,8 +5,8 @@ Copyright 2009 by Accense Technology, Inc
 
 Kay framework - Release Notes
 
-Kay-1.0.1 rc1 - xxxxxx
-=============================
+Kay-1.0.1 rc1 - February 27th 2011
+==========================================
 
 - Fixed an issue where error mails could not be sent to email addresses
   that were not specified as a developer in the admin console. (Issue #50)
