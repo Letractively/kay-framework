@@ -2,13 +2,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. _index:
+
 Welcome to Kay documentation!
 =============================
 
 This document might be newer version than you need. Please visit following urls for older releases:
 
+  - http://kay-docs.shehas.net/1.0.0/
   - http://kay-docs.shehas.net/0.8.0/
-  - http://kay-docs.shehas.net/0.3.0/
 
 Contents:
 
