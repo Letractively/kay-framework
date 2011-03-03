@@ -5,6 +5,17 @@ Copyright 2009 by Accense Technology, Inc
 
 Kay framework - Release Notes
 
+Kay-1.1.0rc2 - February 28 2011
+=====================================
+
+- Added namespace support to the live settings API (Issue #94)
+
+- Added the COOKIE_SECURE setting to support secure session cookies (Issue #90)
+
+- Fixed some tests (Issue #95)
+
+- Updated some documents.
+
 Kay-1.1.0rc1 - February 22 2011
 =====================================
 
