@@ -7,8 +7,8 @@ Kay 1.1.0 ドキュメントへようこそ
 
 このドキュメントは最新版です。古いバージョンのドキュメントは下記をクリックしてください。
 
+  - http://kay-docs-jp.shehas.net/1.0.1/
   - http://kay-docs-jp.shehas.net/1.0.0/
-  - http://kay-docs-jp.shehas.net/0.8.0/
 
 目次:
 
