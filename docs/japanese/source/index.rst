@@ -2,10 +2,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Kay 1.0.1 rc1 ドキュメントへようこそ
+Kay 1.0.1 ドキュメントへようこそ
 ============================================
 
-このドキュメントは Kay 1.0.1 rc1 版です。
+このドキュメントは Kay 1.0.1 版です。
 
 最新版は下記のURLをクリックしてください。
 
