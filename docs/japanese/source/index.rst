@@ -25,6 +25,7 @@ Kay 1.1.0 rc1 ドキュメントへようこそ
   views
   templates
   utils
+  pagination
   decorators
   auth
   session
