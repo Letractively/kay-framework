@@ -9,8 +9,8 @@ Welcome to Kay 1.1.0 documentation!
 
 This document reflects the newest version of Kay. Please visit following urls for older releases:
 
+  - http://kay-docs.shehas.net/1.0.1/
   - http://kay-docs.shehas.net/1.0.0/
-  - http://kay-docs.shehas.net/0.8.0/
 
 Contents:
 
