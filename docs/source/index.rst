@@ -5,7 +5,13 @@
 Welcome to Kay 1.0.1 rc1 documentation!
 =============================================
 
-This document might be newer version than you need. Please visit following urls for older releases:
+This document reflects Kay 1.0.1 rc1.
+
+Please visit following urls for the newest release:
+
+  - http://kay-docs.shehas.net/
+
+Please visit following urls for older releases:
 
   - http://kay-docs.shehas.net/1.0.0/
   - http://kay-docs.shehas.net/0.8.0/
