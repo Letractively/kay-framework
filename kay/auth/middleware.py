@@ -48,7 +48,7 @@ class LazyGoogleUser(object):
       from google.appengine.ext import db
       user = users.get_current_user()
       if user:
-        key_name = '_%s' % user.user_id()
+        key_name = auth_model_class.get_key_name(user.user_id())
         email = user.email()
         is_current_user_admin = users.is_current_user_admin()
         def txn():

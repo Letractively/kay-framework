@@ -135,6 +135,10 @@ class GoogleUser(User):
   """
   Use User.user_id() as key_name for this model.
   """
+  @classmethod
+  def get_key_name(cls, key):
+    return "_%s" % key
+
   def __eq__(self, obj):
     if not obj or obj.is_anonymous():
       return False
