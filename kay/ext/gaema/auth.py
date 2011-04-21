@@ -164,16 +164,20 @@ class OpenIdMixin(object):
                values[-1] == u"http://openid.net/srv/ax/1.0":
                 ax_ns = name[10:]
                 break
+        openid_signed_params = self.get_argument("openid.signed","").split(',')
         def get_ax_arg(uri):
             if not ax_ns: return u""
             prefix = "openid." + ax_ns + ".type."
             ax_name = None
             for name, values in self.request.arguments.iteritems():
+                if not name[len("openid."):] in openid_signed_params:
+                    continue
                 if values[-1] == uri and name.startswith(prefix):
                     part = name[len(prefix):]
                     ax_name = "openid." + ax_ns + ".value." + part
                     break
             if not ax_name: return u""
+            if not ax_name[len("openid."):] in openid_signed_params: return u""
             return self.get_argument(ax_name, u"")
 
         claimed_id = self.get_argument("openid.claimed_id", None)
