@@ -21,20 +21,28 @@ from kay.utils import (
 from kay.utils.decorators import auto_adapt_to_methods
 
 def login_required(func):
-  def inner(request, *args, **kwargs):
+  def inner(*args, **kwargs):
+    if hasattr(func, "im_self"):
+      request = func.im_self.request
+    else:
+      request = args[0]
     if request.user.is_anonymous():
       if request.is_xhr:
         raise Forbidden
       else:
         return redirect(create_login_url(request.url))
-    return func(request, *args, **kwargs)
+    return func(*args, **kwargs)
   update_wrapper(inner, func)
   return inner
 
 login_required = auto_adapt_to_methods(login_required)
 
 def admin_required(func):
-  def inner(request, *args, **kwargs):
+  def inner(*args, **kwargs):
+    if hasattr(func, "im_self"):
+      request = func.im_self.request
+    else:
+      request = args[0]
     if not request.user.is_admin:
       if request.user.is_anonymous():
         return redirect(create_login_url(request.url))
@@ -47,7 +55,7 @@ def admin_required(func):
           ' Maybe you want <a href="%s">logout</a>?' %
           create_logout_url(request.url)
         )
-    return func(request, *args, **kwargs)
+    return func(*args, **kwargs)
   update_wrapper(inner, func)
   return inner
 
