@@ -25,10 +25,14 @@ from kay.ext.gaema.services import (
 )
 
 def create_inner_func_for_auth(func, *targets):
-  def inner(request, *args, **kwargs):
+  def inner(*args, **kwargs):
+    if hasattr(func, "im_self"):
+      request = func.im_self.request
+    else:
+      request = args[0]
     for service in targets:
       if get_gaema_user(service):
-        return func(request, *args, **kwargs)
+        return func(*args, **kwargs)
     return redirect(url_for('gaema/select_service', targets='|'.join(targets),
                             next_url=url_quote_plus(request.url)))
   return inner
@@ -41,9 +45,13 @@ def gaema_login_required(*services):
   return auto_adapt_to_methods(outer)
 
 def marketplace_login_required(func):
-  def inner(request, *args, **kwargs):
+  def inner(*args, **kwargs):
+    if hasattr(func, "im_self"):
+      request = func.im_self.request
+    else:
+      request = args[0]
     if get_gaema_user(kwargs['domain_name']):
-      return func(request, *args, **kwargs)
+      return func(*args, **kwargs)
     return redirect(create_marketplace_login_url(kwargs['domain_name'],
                                                  nexturl=request.url))
   return inner
