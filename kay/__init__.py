@@ -127,6 +127,12 @@ def setup():
   from google.appengine.ext import db
   from google.appengine.ext.db import polymodel
 
+  if getattr(settings, 'ADD_APP_PREFIX_TO_KIND', True) and settings.DEBUG:
+    logging.info(
+      "ADD_APP_PREFIX_TO_KIND is deprecated. Please add a kind() method"
+      "to your models that returns the correct name for the entity"
+    )
+
   class _meta(object):
     __slots__ = ('object_name', 'app_label', 'module_name', '_db_table',
                  'abstract')
