@@ -9,7 +9,6 @@ Kay authentication model for gaema.
 :license: BSD, see LICENSE for more details.
 """
 
-import simplejson
 import pickle
 
 from google.appengine.ext import db

@@ -74,7 +74,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import kay
 kay.setup()
 
-import simplejson
+import json
 
 from kay.conf import settings
 from werkzeug.utils import import_string
@@ -159,7 +159,7 @@ class JsonTestResult(unittest.TestResult):
             'failures': self._list(self.failures),
         }
 
-        stream.write(simplejson.dumps(result))
+        stream.write(json.dumps(result))
 
     def _list(self, list):
         dict = []
@@ -300,7 +300,7 @@ def _test_suite_to_json(suite):
                 method_list = mod_dict[class_name]
                 method_list.append(method_name)
                 
-    return simplejson.dumps(test_dict)
+    return json.dumps(test_dict)
 
 
 def _run_test_suite(runner, suite):
