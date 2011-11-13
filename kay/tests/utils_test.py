@@ -10,7 +10,7 @@ Kay tests for utility functions.
 
 import logging
 
-import simplejson
+import json
 
 from kay.utils import (
   render_json_response,
@@ -36,7 +36,7 @@ class RenderFuncTestCase(GAETestBase):
     for v in self.test_values:
       response = render_json_response(v)
       self.assertEqual(response.status_code, 200)
-      v2 = simplejson.loads(response.data)
+      v2 = json.loads(response.data)
       self.assertEqual(v, v2)
 
 class DumpModelTestCase(GAETestBase):

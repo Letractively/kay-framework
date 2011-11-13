@@ -12,9 +12,7 @@ import htmlentitydefs
 import re
 import xml.sax.saxutils
 import urllib
-
-from django.utils import simplejson
-
+import json 
 
 def xhtml_escape(value):
     """Escapes a string so it is valid within XML or XHTML."""
@@ -28,12 +26,12 @@ def xhtml_unescape(value):
 
 def json_encode(value):
     """JSON-encodes the given Python object."""
-    return simplejson.dumps(value)
+    return json.dumps(value)
 
 
 def json_decode(value):
     """Returns Python objects for the given JSON string."""
-    return simplejson.loads(_unicode(value))
+    return json.loads(_unicode(value))
 
 
 def squeeze(value):

@@ -36,7 +36,7 @@ import base64
 from datetime import datetime
 from xml.dom import minidom
 
-import simplejson
+import json
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
@@ -285,7 +285,7 @@ def xml_to_json(xml_doc):
     doc_el = xml_doc.documentElement
     json_doc = {doc_el.nodeName : xml_node_to_json(doc_el)}
 
-    return simplejson.dumps(json_doc)
+    return json.dumps(json_doc)
 
 def xml_node_to_json(xml_node):
     if((len(xml_node.childNodes) == 1) and
@@ -1033,7 +1033,7 @@ class RESTViewGroup(ViewGroup):
         is_list = False
         if request.content_type.startswith(JSON_CONTENT_TYPE):
             try:
-                model_dict = simplejson.load(request.stream)
+                model_dict = json.load(request.stream)
                 model_els = [(model_key, model_dict)]
                 if isinstance(model_dict, list):
                     is_list = True

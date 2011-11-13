@@ -225,9 +225,9 @@ def render_json_response(data, mimetype='application/json', **kwargs):
   """
   A function to render JSON responses.
   """
-  import simplejson
-  simplejson_kwargs = kwargs.pop("simplejson_kwargs", {})
-  return get_response_cls()(simplejson.dumps(data, **simplejson_kwargs),
+  import json
+  json_kwargs = kwargs.pop("json_kwargs", {})
+  return get_response_cls()(json.dumps(data, **json_kwargs),
                             mimetype=mimetype, **kwargs)
 
 def get_standard_processors():
