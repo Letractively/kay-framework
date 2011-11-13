@@ -123,60 +123,6 @@ def setup_env(manage_py_env=False):
 
 def setup():
   setup_syspath()
-  from kay.conf import settings
-  from google.appengine.ext import db
-  from google.appengine.ext.db import polymodel
-
-  class _meta(object):
-    __slots__ = ('object_name', 'app_label', 'module_name', '_db_table',
-                 'abstract')
-    def __init__(self, model):
-      try:
-        self.app_label = model.__module__.split('.')[-2]
-      except IndexError:
-        logging.warn('Kay expects models (here: %s.%s) to be defined in their'
-                     ' own apps!' % (model.__module__, model.__name__))
-        self.app_label = None
-      self.module_name = model.__name__.lower()
-      self.abstract = model is db.Model
-      self.object_name = model.__name__
-
-    def _set_db_table(self, db_table):
-      self._db_table = db_table
-
-    def _get_db_table(self):
-      if getattr(settings, 'ADD_APP_PREFIX_TO_KIND', True):
-        if hasattr(self, '_db_table'):
-          return self._db_table
-        return '%s_%s' % (self.app_label, self.module_name)
-      return self.object_name
-    db_table = property(_get_db_table, _set_db_table)
-
-  def _initialize_model(cls):
-    cls._meta = _meta(cls)  
-
-  old_propertied_class_init = db.PropertiedClass.__init__
-  def __init__(cls, name, bases, attrs, map_kind=True):
-    """
-    Just add _meta to db.Model.
-    """
-    _initialize_model(cls)
-    old_propertied_class_init(cls, name, bases, attrs,
-                              not cls._meta.abstract)
-  db.PropertiedClass.__init__ = __init__
-
-  old_poly_init = polymodel.PolymorphicClass.__init__
-  def __init__(cls, name, bases, attrs):
-    if polymodel.PolyModel not in bases:
-      _initialize_model(cls)
-    old_poly_init(cls, name, bases, attrs)
-  polymodel.PolymorphicClass.__init__ = __init__
-
-  @classmethod
-  def kind(cls):
-    return cls._meta.db_table
-  db.Model.kind = kind
-
 
 def setup_syspath():
   if not PROJECT_DIR in sys.path:
