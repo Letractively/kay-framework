@@ -19,7 +19,7 @@ kay.setup()
 from kay.misc import get_appid
 
 APP_ID = get_appid()
-REMOTE_API_ENTRY_POINT = '/remote_api'
+REMOTE_API_ENTRY_POINT = '/_ah/remote_api'
 
 from google.appengine.ext.db import KindError
 
@@ -154,7 +154,7 @@ class GAETestBase(unittest.TestCase):
         kprefix = self.kind_prefix()
 
         def kind_for_test_with_store_kinds(cls):
-            k = kprefix + cls._meta.db_table
+            k = kprefix + cls.__name__
             global kind_names_for_test
             if not kind_names_for_test:
                 kind_names_for_test = {}
@@ -162,18 +162,16 @@ class GAETestBase(unittest.TestCase):
             return k
 
         def kind_for_test(cls):
-            return kprefix + cls._meta.db_table
+            return kprefix + cls.__name__
             
+
         def class_for_kind_for_test(kind):
-            if kind.find(kprefix) == 0 and \
-                  db._kind_map.has_key(kind[len(kprefix):]):
+            if kind.find(kprefix) == 0 and db._kind_map.has_key(kind[len(kprefix):]):
                 return db._kind_map[kind[len(kprefix):]]
             else:
                 try:
                     return db._kind_map[kind]
                 except KeyError:
-                    import logging
-                    logging.error(db._kind_map)
                     raise KindError('No implementation for kind \'%s\'' % kind)
 
         if self.may_cleanup_used_kind():
@@ -183,21 +181,10 @@ class GAETestBase(unittest.TestCase):
         db.class_for_kind = class_for_kind_for_test
 
     def reswap_model_kind(self):
-        @classmethod
         def original_kind(cls):
-            return cls._meta.db_table
-        db.Model.kind = original_kind
+            return cls.__name__
+        db.Model.kind = classmethod(original_kind)
         db.class_for_kind = self.original_class_for_kind_method
-        delete_keys = []
-        elms = {}
-        kprefix = self.kind_prefix()
-        for key in db._kind_map.keys():
-            if key.startswith(kprefix):
-                 elms[key[len(kprefix):]] = db._kind_map[key]
-                 delete_keys.append(key)
-        for delete_key in delete_keys:
-            del db._kind_map[delete_key]
-        db._kind_map.update(elms)
         
 
     def _env_setUp(self):
