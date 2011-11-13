@@ -218,18 +218,7 @@ class KayApp(object):
     """
     Initialize the environment for jinja2.
     """
-    if os.environ.get("SERVER_NAME", None) == "localhost" or \
-          os.environ.get("SERVER_SOFTWARE", "").startswith("Dev"):
-      from jinja2 import (FileSystemLoader, ChoiceLoader, PrefixLoader,)
-      template_postfix = ""
-    else:
-      from kay.utils.jinja2utils.code_loaders import FileSystemCodeLoader as \
-          FileSystemLoader
-      from kay.utils.jinja2utils.code_loaders import ChoiceCodeLoader as \
-          ChoiceLoader
-      from kay.utils.jinja2utils.code_loaders import PrefixCodeLoader as \
-          PrefixLoader
-      template_postfix = "_compiled"
+    from jinja2 import (FileSystemLoader, ChoiceLoader, PrefixLoader,)
     per_app_loaders = {}
     for app in self.get_installed_apps():
       try:
@@ -242,18 +231,12 @@ class KayApp(object):
       except AttributeError:
         app_key = get_app_tailname(app)
       per_app_loaders[app_key] = FileSystemLoader(
-        os.path.join(os.path.dirname(mod.__file__),
-                     "templates"+template_postfix))
+        os.path.join(os.path.dirname(mod.__file__), "templates"))
     loader = PrefixLoader(per_app_loaders)
     target_dirs = self.app_settings.TEMPLATE_DIRS+("kay/templates",)
-    def replace_dirname(orig):
-      if 'templates' in orig:
-        return orig.replace('templates', 'templates'+template_postfix)
-      else:
-        return orig+template_postfix
     import kay
     base_loader = FileSystemLoader(
-      [os.path.join(kay.PROJECT_DIR, replace_dirname(d)) for d in target_dirs])
+      [os.path.join(kay.PROJECT_DIR, d) for d in target_dirs])
     loader = ChoiceLoader([base_loader, loader])
     env_dict = {}
     env_dict.update(self.app_settings.JINJA2_ENVIRONMENT_KWARGS)
