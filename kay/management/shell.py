@@ -42,6 +42,7 @@ from kay.management.utils import print_status
 
 THREAD_NUM = 20
 HISTORY_PATH = os.path.expanduser('~/.kay_shell_history')
+DEFAULT_REMOTE_API_PATH = '/_ah/remote_api'
 
 def get_all_models_as_dict(only_polymodel_base=False):
   ret = {}
@@ -290,7 +291,7 @@ def create_user(user_name=('u', ''), password=('P', ''), is_admin=('A', False),
   if not host:
     host = "%s.appspot.com" % appid
   if not path:
-    path = '/remote_api'
+    path = DEFAULT_REMOTE_API_PATH
   
   remote_api_stub.ConfigureRemoteApi(None, path, auth_func,
                                      host, secure=secure, save_cookies=True)
@@ -313,7 +314,7 @@ def clear_datastore(appid=('a', ''), host=('h', ''), path=('p', ''),
   if not host:
     host = "%s.appspot.com" % appid
   if not path:
-    path = '/remote_api'
+    path = DEFAULT_REMOTE_API_PATH
   if not kinds:
     models = None
   else:
@@ -350,7 +351,7 @@ def rshell(appid=('a', ''), host=('h', ''), path=('p', ''),
   if not host:
     host = "%s.appspot.com" % appid
   if not path:
-    path = '/remote_api'
+    path = DEFAULT_REMOTE_API_PATH
 
   remote_api_stub.ConfigureRemoteApi(None, path, auth_func,
                                      host, secure=secure, save_cookies=True)
