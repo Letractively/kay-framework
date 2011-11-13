@@ -18,8 +18,6 @@ import optparse
 import kay
 import kay.app
 from kay.utils import local
-from kay.utils.jinja2utils.compiler import compile_dir
-from kay.management.preparse import do_preparse_apps
 from kay.management.utils import print_status
 from shell import get_all_models_as_dict
 
@@ -37,8 +35,6 @@ def do_appcfg_passthru_argv():
   if len(sys.argv) < 3:
     sys.stderr.write('action required.\n')
     sys.exit(1)
-  if 'update' in sys.argv:
-    do_preparse_apps()
   
   models = get_all_models_as_dict()
   args = []
