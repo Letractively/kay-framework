@@ -28,8 +28,6 @@ from kay.management.bulkloader import (
   do_bulkloader_passthru_argv, dump_all, restore_all,
 )
 from kay.management.test import do_runtest
-from kay.management.preparse import do_preparse_bundle
-from kay.management.preparse import do_preparse_apps
 from kay.management.extract_messages import do_extract_messages
 from kay.management.add_translations import do_add_translations
 from kay.management.update_translations import do_update_translations
@@ -46,8 +44,6 @@ action_rshell = rshell
 action_startapp = startapp
 action_startproject = startproject
 action_test = do_runtest
-action_preparse_bundle = do_preparse_bundle
-action_preparse_apps = do_preparse_apps
 action_extract_messages = do_extract_messages
 action_add_translations = do_add_translations
 action_update_translations = do_update_translations
@@ -80,15 +76,15 @@ for app in settings.INSTALLED_APPS:
 
 __all__ = [
   'runserver_passthru_argv', 'startapp', 'do_appcfg_passthru_argv',
-  'do_bulkloader_passthru_argv', 'do_runtest', 'do_preparse_bundle',
+  'do_bulkloader_passthru_argv', 'do_runtest',
   'do_extract_messages', 'do_add_translations', 'do_update_translations',
-  'do_compile_translations', 'shell', 'rshell', 'do_preparse_apps',
+  'do_compile_translations', 'shell', 'rshell',
   'startproject', 'do_wxadmin', 'clear_datastore', 'create_user', 'dump_all',
   'restore_all', 'do_compile_media',
 
   'action_dump_all', 'action_restore_all', 'action_shell', 'action_rshell',
   'action_startapp', 'action_startproject', 'action_test',
-  'action_preparse_bundle', 'action_preparse_apps', 'action_extract_messages',
+  'action_extract_messages',
   'action_add_translations', 'action_update_translations',
   'action_compile_translations', 'action_appcfg', 'action_runserver',
   'action_bulkloader', 'action_clear_datastore', 'action_create_user',
