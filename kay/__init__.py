@@ -94,22 +94,9 @@ def setup_env(manage_py_env=False):
         gae_zip.read(template_dir+dev_appserver.FOOTER_TEMPLATE))
     # ... else it could be a directory.
     else:
-      EXTRA_PATHS = [SDK_PATH]
-      lib = os.path.join(SDK_PATH, 'lib')
-      # Automatically add all packages in the SDK's lib folder:
-      for dir in os.listdir(lib):
-        # SDK 1.4.2 introduced Django 1.2, and renamed django to django_0_96
-        if dir == 'django_0_96':
-         EXTRA_PATHS.append(os.path.join(lib, dir))
-         continue
-        path = os.path.join(lib, dir)
-        # Package can be under 'lib/<pkg>/<pkg>/' or 'lib/<pkg>/lib/<pkg>/'
-        detect = (os.path.join(path, dir), os.path.join(path, 'lib', dir))
-        for path in detect:
-          if os.path.isdir(path):
-            EXTRA_PATHS.append(os.path.dirname(path))
-            break
-      sys.path = EXTRA_PATHS + sys.path
+      sys.path = [SDK_PATH] + sys.path
+      from appcfg import EXTRA_PATHS as appcfg_EXTRA_PATHS
+      sys.path = appcfg_EXTRA_PATHS + sys.path
 
     # corresponds with another google package
     if sys.modules.has_key('google'):
