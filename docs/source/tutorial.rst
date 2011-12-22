@@ -5,21 +5,22 @@ Kay tutorial
 Preparation
 -----------
 
-Install following stuff::
+Install following stuff:
 
-  * Python-2.5
-  * App Engine SDK/Python
+  * Python-2.7.x
+  * App Engine SDK/Python 1.6+
   * Kay Framework
+  * jinja2 library (install with easy_install jinja2)
   * ipython (recommended)
 
-If you install python25 from macports, you also need to install following::
+If you install python25 from macports, you also need to install following:
 
   * py25-hashlib
   * py25-socket-ssl
   * py25-pil
   * py25-ipython (recommended)
 
-If you retreive Kay from the repository, you need to install mercurial::
+If you retreive Kay from the repository, you need to install also:
 
   * mercurial
 
@@ -38,18 +39,12 @@ follows:
 
    $ tar zxvf kay-VERSION.tar.gz
 
-.. Note::
-
-   In this tutorial, we use Kay-0.10.0 or higher, so if Kay-0.10.0 has
-   been released, you can use the release version, otherwise please
-   use the code from Kay's repository.
-
 If you have installed a zip version of appengine SDK, please create a
 symbolic link as follows:
 
 .. code-block:: bash
 
-   $ sudo ln -s /some/whare/google_appengine /usr/local/google_appengine    
+   $ sudo ln -s /some/where/google_appengine /usr/local/google_appengine    
 
 If you have used an installer of appengine SDK, you don't need to
 create the symlink.
@@ -111,16 +106,12 @@ registering your application to the project.
 
 First, please add ``myapp`` to a tuple ``settings.INSTALLED_APPS``. If
 necessary, you can configure which URL to mount this application by
-setting a dictionary ``APP_MOUNT_POINTS``. An example bellow shows how
+setting a dictionary ``APP_MOUNT_POINTS``. An example below shows how
 to mount your application at a URL '/'.
 
 settings.py
 
 .. code-block:: python
-
-  #$/usr/bin/python
-  #..
-  #..
 
   INSTALLED_APPS = (
     'kay.auth',
@@ -132,7 +123,7 @@ settings.py
   }
 
 Unless setting ``APP_MOUNT_POINTS``, the application will be mounted
-at a URL come from the application name like ``/myapp``. 
+at a URL derived from the application name like ``/myapp``. 
 
 In the example above, as you see, we added another application named
 ``kay.auth`` for later use.
@@ -172,8 +163,8 @@ credentials here. After successful deployment, you can access your
 application at http://your-appid.appspot.com/.
 
 
-Quick look into a skelton
--------------------------
+Quick look into the app skelton
+---------------------------
 
 myapp/urls.py
 =============
