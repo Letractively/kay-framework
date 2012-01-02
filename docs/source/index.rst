@@ -4,7 +4,7 @@
 
 .. _index:
 
-Welcome to Kay 1.1.0 documentation!
+Welcome to Kay |release| documentation!
 ============================================
 
 This document reflects the newest version of Kay. Please visit following urls for older releases:
