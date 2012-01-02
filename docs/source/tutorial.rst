@@ -13,13 +13,6 @@ Install following stuff:
   * jinja2 library (install with easy_install jinja2)
   * ipython (recommended)
 
-If you install python25 from macports, you also need to install following:
-
-  * py25-hashlib
-  * py25-socket-ssl
-  * py25-pil
-  * py25-ipython (recommended)
-
 If you retreive Kay from the repository, you need to install also:
 
   * mercurial
@@ -137,10 +130,11 @@ by following command.
 .. code-block:: bash
 
   $ python manage.py runserver
-  INFO     2009-08-04 05:48:21,339 appengine_rpc.py:157] Server: appengine.google.com
-  ...
-  ...
-  INFO     ... Running application myproject on port 8080: http://localhost:8080
+  Running on Kay-1.1.1
+  INFO     2012-01-02 16:47:14,832 appengine_rpc.py:159] Server: appengine.google.com
+  [...]
+  INFO     2012-01-02 16:47:15,387 dev_appserver_multiprocess.py:638] Running application myprojectappid on port 8080: http://localhost:8080
+  INFO     2012-01-02 16:47:15,388 dev_appserver_multiprocess.py:640] Admin console is available at: http://localhost:8080/_ah/admin
 
 
 You will see just 'Hello' on your browser by accessing
