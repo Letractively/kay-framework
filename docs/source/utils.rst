@@ -74,6 +74,13 @@ There are various useful functions in :mod:`kay.utils`.
    :param mimetype: The mimetype of :class:`werkzeug.Response`
    :return: Rendered response
 
+.. function:: render_json_response(data, mimetype='application/json')
+
+   A function for render JSON output.
+
+   :param data: The object.
+   :param mimetype: The mimetype of :class:`werkzeug.Response`
+   :return: Rendered response
 
 .. function:: to_local_timezone(datetime, tzname=settings.DEFAULT_TIMEZONE)
 
