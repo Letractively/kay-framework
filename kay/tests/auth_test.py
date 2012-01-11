@@ -15,7 +15,6 @@ class GoogleBackendTestCase(GAETestBase):
   KIND_NAME_UNSWAPPED = False
   USE_PRODUCTION_STUBS = True
   CLEANUP_USED_KIND = True
-  KIND_PREFIX_IN_TEST = 't1'
   
   def setUp(self):
     try:
@@ -49,7 +48,6 @@ class DatastoreBackendTestCase(GAETestBase):
   KIND_NAME_UNSWAPPED = False
   USE_PRODUCTION_STUBS = True
   CLEANUP_USED_KIND = True
-  KIND_PREFIX_IN_TEST = 't2'
   
   def setUp(self):
     s = LazySettings(settings_module='kay.tests.datastore_settings')
@@ -94,7 +92,6 @@ class GAEMABackendTestCase(GAETestBase):
   KIND_NAME_UNSWAPPED = False
   USE_PRODUCTION_STUBS = True
   CLEANUP_USED_KIND = True
-  KIND_PREFIX_IN_TEST = 't3'
 
   def setUp(self):
     s = LazySettings(settings_module='kay.tests.gaema_settings')
