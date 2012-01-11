@@ -117,7 +117,7 @@ def do_runtest(target=('t', ''), verbosity=("v", 0)):
   """
   Run test for installed applications.
   """
-  os.environ['SERVER_SOFTWARE'] = 'Dev-Test'
+  os.environ['SERVER_SOFTWARE'] = 'Test-Dev'
   setup_env()
   setup_stub()
   runtest(target, verbosity)
