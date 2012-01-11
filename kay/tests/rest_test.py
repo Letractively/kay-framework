@@ -163,7 +163,6 @@ class RestTestCase(GAETestBase):
   KIND_NAME_UNSWAPPED = False
   USE_PRODUCTION_STUBS = True
   CLEANUP_USED_KIND = True
-  KIND_PREFIX_IN_TEST = "t2"
 
   def setUp(self):
     s = LazySettings(settings_module='kay.tests.rest_settings')
