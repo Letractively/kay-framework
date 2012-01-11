@@ -59,6 +59,19 @@ def get_application(settings=_settings):
     app = jsonrpc2.make_application(getattr(settings, "JSONRPC2_METHODS", {}))
     submount_apps['/%s' % app_name] = app
   application = DispatcherMiddleware(application, submount_apps)
+  if 'SERVER_SOFTWARE' in os.environ and \
+        os.environ['SERVER_SOFTWARE'].startswith('Dev'):
+    from werkzeug import DebuggedApplication
+
+    # use our debug.utils with Jinja2 templates
+    import debug.utils
+    sys.modules['werkzeug.debug.utils'] = debug.utils
+
+    # don't use inspect.getsourcefile because the imp module is empty 
+    import inspect
+    inspect.getsourcefile = inspect.getfile
+    
+    application = DebuggedApplication(application, evalex=True)
   return application
 
 
