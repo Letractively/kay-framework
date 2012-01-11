@@ -16,8 +16,8 @@ import logging
 
 import settings
 
-__version__ = "1.1.1"
-__version_info__ = (1, 1, 1, 'final', 0)
+__version__ = "2.1.0"
+__version_info__ = (2, 1, 0, 'final', 0)
 
 KAY_DIR = os.path.abspath(os.path.dirname(__file__))
 LIB_DIR = os.path.join(KAY_DIR, 'lib')
