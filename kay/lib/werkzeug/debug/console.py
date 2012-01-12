@@ -5,7 +5,7 @@
 
     Interactive console support.
 
-    :copyright: (c) 2010 by the Werkzeug Team, see AUTHORS for more details.
+    :copyright: (c) 2011 by the Werkzeug Team, see AUTHORS for more details.
     :license: BSD.
 """
 import sys
@@ -14,7 +14,6 @@ from types import CodeType
 from werkzeug.utils import escape
 from werkzeug.local import Local
 from werkzeug.debug.repr import debug_repr, dump, helper
-from werkzeug.debug.utils import render_template
 
 
 _local = Local()
@@ -156,10 +155,9 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
     def runsource(self, source):
         source = source.rstrip() + '\n'
-        stdout_orig = sys.stdout
+        ThreadedStream.push()
+        prompt = self.more and '... ' or '>>> '
         try:
-            ThreadedStream.push()
-            prompt = self.more and '... ' or '>>> '
             source_to_eval = ''.join(self.buffer + [source])
             if code.InteractiveInterpreter.runsource(self,
                source_to_eval, '<debugger>', 'single'):
@@ -170,13 +168,12 @@ class _InteractiveConsole(code.InteractiveInterpreter):
                 del self.buffer[:]
         finally:
             output = ThreadedStream.fetch()
-            sys.stdout = stdout_orig
         return prompt + source + output
 
     def runcode(self, code):
         try:
             exec code in self.globals, self.locals
-        except:
+        except Exception:
             self.showtraceback()
 
     def showtraceback(self):
