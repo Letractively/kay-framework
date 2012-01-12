@@ -71,7 +71,8 @@ def get_application(settings=_settings):
     import inspect
     inspect.getsourcefile = inspect.getfile
     
-    application = DebuggedApplication(application, evalex=True)
+    application = DebuggedApplication(application, evalex=True,
+                                      lodgeit_url='http://paste.shehas.net/')
   return application
 
 
