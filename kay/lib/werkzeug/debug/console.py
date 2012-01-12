@@ -155,9 +155,10 @@ class _InteractiveConsole(code.InteractiveInterpreter):
 
     def runsource(self, source):
         source = source.rstrip() + '\n'
-        ThreadedStream.push()
-        prompt = self.more and '... ' or '>>> '
+        stdout_orig = sys.stdout
         try:
+            ThreadedStream.push()
+            prompt = self.more and '... ' or '>>> '
             source_to_eval = ''.join(self.buffer + [source])
             if code.InteractiveInterpreter.runsource(self,
                source_to_eval, '<debugger>', 'single'):
@@ -168,6 +169,7 @@ class _InteractiveConsole(code.InteractiveInterpreter):
                 del self.buffer[:]
         finally:
             output = ThreadedStream.fetch()
+            sys.stdout = stdout_orig
         return prompt + source + output
 
     def runcode(self, code):
