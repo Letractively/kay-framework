@@ -465,7 +465,8 @@ class KayApp(object):
     local.url_adapter = self.url_map.bind_to_environ(environ)
 
   def __call__(self, environ, start_response):
-
+    if self.app_settings.DEBUG:
+      logging.getLogger().setLevel(logging.DEBUG)
     self._prepare(environ)
 
     local.request = request = Request(environ)
