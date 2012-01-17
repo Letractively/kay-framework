@@ -14,10 +14,10 @@ This module implements useful decorators for appengine datastore.
 """
 
 import types
-from functools import wraps, update_wrapper
-
+from functools import wraps, update_wrapper, partial
 from google.appengine.api import memcache
 from werkzeug._internal import _missing
+from kay.handlers import BaseHandler
 
 DATASTORE_WRITABLE = "appengine_datastore_writable"
 
@@ -30,7 +30,7 @@ class MethodDecoratorAdaptor(object):
   used on methods
   """
   def __init__(self, decorator, func):
-    update_wrapper(self, func)
+    if isinstance(func, MethodDecoratorAdaptor): update_wrapper(self, func)
     # NB: update the __dict__ first, *then* set
     # our own .func and .decorator, in case 'func' is actually
     # another MethodDecoratorAdaptor object, which has its
@@ -40,15 +40,26 @@ class MethodDecoratorAdaptor(object):
   def __call__(self, *args, **kwargs):
     return self.decorator(self.func)(*args, **kwargs)
   def __get__(self, instance, owner):
-    return self.decorator(self.func.__get__(instance, owner))
+    func = self.decorator(self.func.__get__(instance, owner))
+    if isinstance(instance, BaseHandler):
+        func = partial(func, instance.request)
+    return func
 
+def request_handler(func):
+  def inner(request, *args, **kwargs):
+    try:
+      return func(request, **kwargs)
+    except TypeError:
+      return func(**kwargs)
+  return inner
+    
 def auto_adapt_to_methods(decorator):
   """
   Takes a decorator function, and returns a decorator-like callable that can
   be used on methods as well as functions.
   """
   def adapt(func):
-    return MethodDecoratorAdaptor(decorator, func)
+    return MethodDecoratorAdaptor(decorator, request_handler(func))
   return wraps(decorator)(adapt)
 
 def decorator_from_middleware_with_args(middleware_class):
