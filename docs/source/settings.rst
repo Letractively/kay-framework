@@ -131,12 +131,6 @@ Items
    If set to ``True``, HTML response cache will remain only while user login. The default is ``True``.
 
    
-.. attribute:: ADD_APP_PREFIX_TO_KIND
-
-   If set to ``True``, you can add an application prefix to
-   ``db.Model.kind()`` method.  The value of ``kind()`` will set to be
-   ``applicationname_modelname`` (uncapitalized).
-
 .. attribute:: FORMS_USE_XHTML
 
    If set to ``True``, :mod:`kay.utils.forms` renders forms in an
@@ -326,3 +320,4 @@ Items
      'foo.example.com': 'foo_settings',
      'bar.example.com': 'bar_settings',
    }
+   
