@@ -463,6 +463,10 @@ manage.py test
    * ``1``: 進捗を ``.`` で出力。
    * ``2``: テストメソッドの docstring を出力。
 
+.. cmdoption:: --high-replication
+
+   指定されるとテストが HRD エミュレーション環境で実施されます。
+
    
 .. program:: manage.py update_translations
 
