@@ -104,7 +104,7 @@ language explicitly as follows:
   <a href="{{ create_lang_url(lang='en') }}">{{ _('English') }}</a>
   <a href="{{ create_lang_url(lang='ja') }}">{{ _('Japanese') }}</a>
 
-Javascript handler
+I18n in Javascript
 ------------------
 
 You can add a handler for pseudo javascript gettext to
@@ -126,3 +126,33 @@ You can add a handler for pseudo javascript gettext to
          view='kay.views.i18n.javascript_catalog',
          defaults={'packages':('myapp','kay')})
    )]
+
+Include it in `index.html`:
+
+.. code-block:: html
+
+   <script src="{{ url_for('i18n_js') }}"></script>
+
+Put your javascript code in your application
+directory(e.g. `myapp/static/myapp.js`) like:
+
+.. code-block:: javascript
+
+   document.getElementById('dynamic').innerHTML = gettext('Hello');
+
+Add static handler entry to your `app.yaml` like:
+
+.. code-block:: yaml
+
+   handlers:
+   - url: /static
+     static_dir: myapp/static
+
+Then you can extract and add messages for specific language(ja in this
+example) by:
+
+.. code-block:: bash
+
+   $ python manage.py extract_messages myapp -d jsmessages
+   $ python manage.py add_translations myapp -l ja
+
