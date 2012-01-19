@@ -40,22 +40,6 @@ Items
      administrators by email.
 
 
-.. attribute:: PROFILE
-
-   If set to ``True``, a profiling information will be displayed on the
-   browser following normal application's response. The default is ``False``.
-
-
-.. attribute:: PRINNT_CALLERS_ON_PROFILING
-
-   If set to ``True``, callers will displayed on the browser with profiling information. The default is ``False``. 
-
-   
-.. attribute:: PRINNT_CALLEES_ON_PROFILING
-
-   If set to ``True``, callees will displayed on the browser with profiling information. The default is ``False``. 
-
-   
 .. attribute:: SECRET_KEY
 
    The seed to generate a hash value. The default is ``ReplaceItWithSecretString``. Please be sure to rewrite this.
@@ -304,20 +288,3 @@ Items
 
    The e-mail address configured here is used for FROM address of
    e-mails sent by Kay.
-
-.. attribute:: PER_DOMAIN_SETTINGS
-
-   If you define this dictionary appropriately, you can change
-   settings module by a domain part of a request. You need to set
-   domain names as its keys, and module name for its values.
-
-   Here is an example.
-
-   .. code-block:: python
-
-
-   PER_DOMAIN_SETTINGS = {
-     'foo.example.com': 'foo_settings',
-     'bar.example.com': 'bar_settings',
-   }
-   

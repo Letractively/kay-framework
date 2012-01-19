@@ -14,9 +14,6 @@ import os
 APP_NAME = 'kay_main'
 DEFAULT_TIMEZONE = 'Asia/Tokyo'
 DEBUG = True
-PROFILE = False
-PRINNT_CALLERS_ON_PROFILING = False
-PRINNT_CALLEES_ON_PROFILING = False
 SECRET_KEY = 'please set secret keys here'
 SESSION_PREFIX = 'gaesess:'
 COOKIE_AGE = 1209600 # 2 weeks
@@ -87,9 +84,6 @@ ACCOUNT_ACTIVATION_DURATION = 3600
 DEFAULT_MAIL_FROM = 'admin@example.com'
 
 TEMPORARY_SESSION_LIFETIME = 3600
-
-PER_DOMAIN_SETTINGS = {
-}
 
 # To use jsonrpc, set url path to JSONRPC_MOUNT_POINT.
 JSONRPC2_MOUNT_POINT = None
