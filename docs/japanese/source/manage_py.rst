@@ -465,7 +465,7 @@ manage.py test
 
 .. cmdoption:: --high-replication
 
-   指定されるとテストが HRD エミュレーション環境で実施されます。
+   指定するとテストを HRD エミュレーション環境で実施します。
 
    
 .. program:: manage.py update_translations
