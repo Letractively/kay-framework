@@ -39,6 +39,7 @@ from google.appengine.api import urlfetch_stub
 from google.appengine.api.memcache import memcache_stub
 from google.appengine.api import user_service_stub
 from google.appengine.api.taskqueue import taskqueue_stub
+from google.appengine.datastore import datastore_stub_util
 try:
   from google.appengine.api.images import images_stub
 except ImportError:
@@ -68,10 +69,13 @@ def setup_env():
   logging.getLogger().setLevel(logging.ERROR)
 
 
-def setup_stub():
+def setup_stub(high_replication=False):
   apiproxy_stub_map.apiproxy = apiproxy_stub_map.APIProxyStubMap()
   stub = datastore_file_stub.DatastoreFileStub('test','/dev/null',
                                                '/dev/null', trusted=True)
+  if high_replication:
+    stub.SetConsistencyPolicy(
+        datastore_stub_util.TimeBasedHRConsistencyPolicy())
   apiproxy_stub_map.apiproxy.RegisterStub('datastore_v3', stub)
 
   apiproxy_stub_map.apiproxy.RegisterStub(
@@ -113,12 +117,13 @@ def runtest(target='', verbosity=0):
             tests_mod))
   unittest.TextTestRunner(verbosity=verbosity).run(suite)
 
-def do_runtest(target=('t', ''), verbosity=("v", 0)):
+def do_runtest(target=('t', ''), verbosity=('v', 0),
+               high_replication=False):
   """
   Run test for installed applications.
   """
   os.environ['SERVER_SOFTWARE'] = 'Test-Dev'
   setup_env()
-  setup_stub()
+  setup_stub(high_replication=high_replication)
   runtest(target, verbosity)
 
