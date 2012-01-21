@@ -17,5 +17,7 @@ view_groups = [
          view='kay.tests.auth_testapp.views.index'),
     Rule('/secret', endpoint='secret',
          view='kay.tests.auth_testapp.views.secret'),
+    Rule('/c/secret', endpoint='c_secret',
+         view=('kay.tests.auth_testapp.views.SecretHandler', (), {})),
   )
 ]

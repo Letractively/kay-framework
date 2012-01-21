@@ -61,6 +61,8 @@ class MaintenanceCheckTestCase(unittest.TestCase):
       capability_stub.CapabilityServiceStub())
     response = self.client.get('/')
     self.assertEqual(response.status_code, 200)
+    response = self.client.get('/class_based_test_root/')
+    self.assertEqual(response.status_code, 200)
 
   def test_failure(self):
     """Test with DisabledCapabilityServiceStub
@@ -73,10 +75,21 @@ class MaintenanceCheckTestCase(unittest.TestCase):
     self.assertEqual(response.headers['Location'],
                      'http://localhost/maintenance_page')
 
+    response = self.client.get('/class_based_test_root/')
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.headers['Location'],
+                     'http://localhost/maintenance_page')
+
     response = self.client.get('/index2')
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.headers['Location'],
                      'http://localhost/no_decorator')
+
+    response = self.client.get('/class_based_test_root/index2')
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.headers['Location'],
+                     'http://localhost/no_decorator')
+
     response = self.client.get('/no_decorator')
     self.assertEqual(response.status_code, 200)
 
@@ -92,9 +105,15 @@ class CronOnlyTestCase(GAETestBase):
             headers=(('X-AppEngine-Cron', 'true'),))
     self.assertEqual(response.status_code, 200)
     self.assertTrue(response.data == "OK")
+    response = self.client.get("/class_based_test_root/cron",
+            headers=(('X-AppEngine-Cron', 'true'),))
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue(response.data == "OK")
 
   def test_cron_only_failure(self):
     response = self.client.get("/cron")
+    self.assertEqual(response.status_code, 403)
+    response = self.client.get("/class_based_test_root/cron")
     self.assertEqual(response.status_code, 403)
 
 
@@ -113,9 +132,18 @@ class CronOnlyDebugTestCase(GAETestBase):
       self.assertEqual(response.status_code, 200)
     else:
       self.assertEqual(response.status_code, 403)
+    response = self.client.get("/class_based_test_root/cron")
+    if is_dev_server():
+      self.assertEqual(response.status_code, 200)
+    else:
+      self.assertEqual(response.status_code, 403)
 
   def test_cron_only(self):
     response = self.client.get("/cron",
+            headers=(('X-AppEngine-Cron', 'true'),))
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue(response.data == "OK")
+    response = self.client.get("/class_based_test_root/cron",
             headers=(('X-AppEngine-Cron', 'true'),))
     self.assertEqual(response.status_code, 200)
     self.assertTrue(response.data == "OK")

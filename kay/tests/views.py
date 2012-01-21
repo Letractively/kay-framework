@@ -14,6 +14,7 @@ from werkzeug import (
 from kay.utils import (
   local, render_to_response, url_for,
 )
+from kay.handlers import BaseHandler
 from kay.i18n import lazy_gettext as _
 from kay.utils.decorators import maintenance_check, cron_only
 
@@ -28,6 +29,19 @@ def index2(request):
 def no_decorator(request):
   return Response("test")
 
+
+class MaintenanceCheck(BaseHandler):
+  @maintenance_check
+  def get(self):
+    return Response("test")
+
+
+class MaintenanceCheckWithArgument(BaseHandler):
+  @maintenance_check("tests/no_decorator")
+  def get(self):
+    return Response("test")
+    
+
 def oldpage(request):
   return Resposne("Old")
 
@@ -41,4 +55,10 @@ def countup(request):
 
 @cron_only
 def cron(request):
+    return Response("OK")
+
+
+class CronOnly(BaseHandler):
+  @cron_only
+  def get(self):
     return Response("OK")

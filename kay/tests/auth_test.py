@@ -37,11 +37,17 @@ class GoogleBackendTestCase(GAETestBase):
     self.assertEqual(response.status_code, 200)
     response = self.client.get(url_for('auth_testapp/secret'))
     self.assertEqual(response.status_code, 302)
+    response = self.client.get(url_for('auth_testapp/c_secret'))
+    self.assertEqual(response.status_code, 302)
     self.client.test_login(email="test@example.com", is_admin="1")
     response = self.client.get(url_for('auth_testapp/secret'))
     self.assertEqual(response.status_code, 200)
+    response = self.client.get(url_for('auth_testapp/c_secret'))
+    self.assertEqual(response.status_code, 200)
     self.client.test_logout()
     response = self.client.get(url_for('auth_testapp/secret'))
+    self.assertEqual(response.status_code, 302)
+    response = self.client.get(url_for('auth_testapp/c_secret'))
     self.assertEqual(response.status_code, 302)
 
 class DatastoreBackendTestCase(GAETestBase):
