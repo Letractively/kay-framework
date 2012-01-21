@@ -13,6 +13,7 @@ This module implements useful decorators for appengine datastore.
 :license: BSD, see LICENSE for more details.
 """
 
+import logging
 import types
 from functools import wraps, update_wrapper, partial
 from google.appengine.api import memcache
@@ -30,7 +31,8 @@ class MethodDecoratorAdaptor(object):
   used on methods
   """
   def __init__(self, decorator, func):
-    if isinstance(func, MethodDecoratorAdaptor): update_wrapper(self, func)
+    if isinstance(func, MethodDecoratorAdaptor):
+      update_wrapper(self, func)
     # NB: update the __dict__ first, *then* set
     # our own .func and .decorator, in case 'func' is actually
     # another MethodDecoratorAdaptor object, which has its
@@ -40,18 +42,19 @@ class MethodDecoratorAdaptor(object):
   def __call__(self, *args, **kwargs):
     return self.decorator(self.func)(*args, **kwargs)
   def __get__(self, instance, owner):
-    func = self.decorator(self.func.__get__(instance, owner))
+    func = self.decorator(request_handler(self.func.__get__(instance, owner)))
     if isinstance(instance, BaseHandler):
         func = partial(func, instance.request)
     return func
 
 def request_handler(func):
   def inner(request, *args, **kwargs):
-    try:
+    if hasattr(func, 'im_self') and isinstance(func.im_self, BaseHandler):
+        return func(**kwargs)
+    else:
       return func(request, **kwargs)
-    except TypeError:
-      return func(**kwargs)
   return inner
+        
     
 def auto_adapt_to_methods(decorator):
   """
@@ -59,7 +62,7 @@ def auto_adapt_to_methods(decorator):
   be used on methods as well as functions.
   """
   def adapt(func):
-    return MethodDecoratorAdaptor(decorator, request_handler(func))
+    return MethodDecoratorAdaptor(decorator, func)
   return wraps(decorator)(adapt)
 
 def decorator_from_middleware_with_args(middleware_class):
@@ -155,6 +158,8 @@ def cron_only(func):
     return func(request, *args, **kwargs)
   return inner
 
+cron_only = auto_adapt_to_methods(cron_only)
+
 def maintenance_check(endpoint='_internal/maintenance_page'):
   """
   checks if datastore capabilities stays available for certain time.
@@ -180,10 +185,12 @@ def maintenance_check(endpoint='_internal/maintenance_page'):
         if not request.is_xhr:
           return redirect(url_for(endpoint))
       return view(request, *args, **kwargs)
+    update_wrapper(wrapped, view)
     return wrapped
   if not arg_exist:
-    return decorator(_endpoint)
-  return decorator
+    return auto_adapt_to_methods(decorator)(_endpoint)
+  return auto_adapt_to_methods(decorator)
+
 
 class memcache_property(object):
   """A decorator that converts a function into a lazy property.  The

@@ -11,6 +11,7 @@ from werkzeug import (
   unescape, redirect, Response,
 )
 
+from kay.handlers import BaseHandler
 from kay.utils import (
   local, render_to_response, url_for,
 )
@@ -22,3 +23,9 @@ def index(request):
 @login_required
 def secret(request):
   return Response("secret")
+
+
+class SecretHandler(BaseHandler):
+  @login_required
+  def get(self):
+    return Response("secret")
