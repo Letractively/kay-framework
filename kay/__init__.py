@@ -96,7 +96,8 @@ def setup_env(manage_py_env=False):
     else:
       sys.path = [SDK_PATH] + sys.path
       from appcfg import EXTRA_PATHS as appcfg_EXTRA_PATHS
-      sys.path = appcfg_EXTRA_PATHS + sys.path
+      from appcfg import GOOGLE_SQL_EXTRA_PATHS as appcfg_SQL_EXTRA_PATHS
+      sys.path = sys.path + appcfg_EXTRA_PATHS + appcfg_SQL_EXTRA_PATHS
 
     # corresponds with another google package
     if sys.modules.has_key('google'):
