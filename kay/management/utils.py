@@ -52,7 +52,7 @@ def create_db_manage_script(main_func=None, clean_func=None, description=None):
     if not host:
       host = "%s.appspot.com" % appid
     if not path:
-      path = '/remote_api'
+      path = '/_ah/remote_api'
 
     if 'localhost' in host:
       auth_func = dummy_auth

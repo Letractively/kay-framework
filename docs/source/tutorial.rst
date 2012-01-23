@@ -158,7 +158,7 @@ application at http://your-appid.appspot.com/.
 
 
 Quick look into the app skelton
----------------------------
+-------------------------------
 
 myapp/urls.py
 =============
@@ -302,7 +302,7 @@ Please keep in mind these two syntaxes for the time being.
 Authentication
 --------------
 
-To enable the user authentication feature, youo need to install a
+To enable the user authentication feature, you need to install a
 middleware for authentication. Kay has various authentication
 backends. We'll use an authentication backend for Google Account in
 this tutorial.
@@ -455,7 +455,7 @@ myapp/models.py:
      body = db.TextProperty(required=True)
      created = db.DateTimeProperty(auto_now_add=True)
 
-``kay.db.OwnerProperty`` which is difined in an attribute ``usser`` is
+``kay.db.OwnerProperty`` which is difined in an attribute ``user`` is
 a property specially offerred by Kay. This is a property for storing a
 key of a user who sines in automatically.
 
@@ -592,12 +592,6 @@ Now you can store comments submitted from the form to the datastore.
 Let's try submitting on the development server. After submitting some
 comments, you can visit http://localhost:8080/_ah/admin for viewing
 contents of the datastore.
-
-A kind named ``myapp_comment`` represents entities which you've just
-created. As you can see, Kay adds application name to a kind name. By
-default, Kay adds application name and a single underscore '_' before
-a class name, and lowercases the whole result. You can suppress this
-behavior by setting ``settings.ADD_APP_PREFIX_TO_KIND`` to False.
 
 
 Guestbook implementation - Step 2
@@ -784,6 +778,15 @@ Please add a file named ``myapp/management.py`` with following content.
    action_create_categories = create_db_manage_script(
      main_func=create_categories, clean_func=delete_categories,
      description="Create 'Category' entities")
+
+
+Then, please add following lines to your ``app.yaml``.
+
+.. code-block:: yaml
+
+   builtins:
+   - remote_api: on
+
 
 After that, you can see following entries in the output of the command
 ``manage.py``::

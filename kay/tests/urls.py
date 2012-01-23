@@ -18,9 +18,16 @@ view_groups = [
     Rule('/index2', endpoint='index2', view='kay.tests.views.index2'),
     Rule('/no_decorator', endpoint='no_decorator',
          view='kay.tests.views.no_decorator'),
+    Rule('/class_based_test_root/', endpoint='maintenance_check',
+         view=('kay.tests.views.MaintenanceCheck',(), {})),
+    Rule('/class_based_test_root/index2',
+         endpoint='maintenance_check_with_arg',
+         view=('kay.tests.views.MaintenanceCheckWithArgument',(), {})),
     Rule('/oldpage', endpoint='oldpage', redirect_to='newpage',
          view='kay.tests.views.oldpage'),
     Rule('/newpage', endpoint='newpage', view='kay.tests.views.newpage'),
     Rule('/cron', endpoint='cron', view='kay.tests.views.cron'),
+    Rule('/class_based_test_root/cron', endpoint='cron_only',
+         view=('kay.tests.views.CronOnly', (), {})),
   )
 ]

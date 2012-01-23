@@ -12,6 +12,7 @@ Kay cache decorators
 import kay.cache
 from kay.utils.decorators import (
   decorator_from_middleware_with_args, decorator_from_middleware,
+  auto_adapt_to_methods,
 )
 from kay.cache.middleware import CacheMiddleware
 
@@ -21,5 +22,7 @@ def no_cache(func):
   """
   setattr(func, kay.cache.NO_CACHE, True)
   return func
+
+no_cache = auto_adapt_to_methods(no_cache)
 
 cache_page = decorator_from_middleware_with_args(CacheMiddleware)

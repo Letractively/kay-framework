@@ -13,11 +13,12 @@ This module implements useful decorators for appengine datastore.
 :license: BSD, see LICENSE for more details.
 """
 
+import logging
 import types
-from functools import wraps, update_wrapper
-
+from functools import wraps, update_wrapper, partial
 from google.appengine.api import memcache
 from werkzeug._internal import _missing
+from kay.handlers import BaseHandler
 
 DATASTORE_WRITABLE = "appengine_datastore_writable"
 
@@ -30,7 +31,8 @@ class MethodDecoratorAdaptor(object):
   used on methods
   """
   def __init__(self, decorator, func):
-    update_wrapper(self, func)
+    if isinstance(func, MethodDecoratorAdaptor):
+      update_wrapper(self, func)
     # NB: update the __dict__ first, *then* set
     # our own .func and .decorator, in case 'func' is actually
     # another MethodDecoratorAdaptor object, which has its
@@ -40,8 +42,20 @@ class MethodDecoratorAdaptor(object):
   def __call__(self, *args, **kwargs):
     return self.decorator(self.func)(*args, **kwargs)
   def __get__(self, instance, owner):
-    return self.decorator(self.func.__get__(instance, owner))
+    func = self.decorator(request_handler(self.func.__get__(instance, owner)))
+    if isinstance(instance, BaseHandler):
+        func = partial(func, instance.request)
+    return func
 
+def request_handler(func):
+  def inner(request, *args, **kwargs):
+    if hasattr(func, 'im_self') and isinstance(func.im_self, BaseHandler):
+        return func(**kwargs)
+    else:
+      return func(request, **kwargs)
+  return inner
+        
+    
 def auto_adapt_to_methods(decorator):
   """
   Takes a decorator function, and returns a decorator-like callable that can
@@ -144,6 +158,8 @@ def cron_only(func):
     return func(request, *args, **kwargs)
   return inner
 
+cron_only = auto_adapt_to_methods(cron_only)
+
 def maintenance_check(endpoint='_internal/maintenance_page'):
   """
   checks if datastore capabilities stays available for certain time.
@@ -169,10 +185,12 @@ def maintenance_check(endpoint='_internal/maintenance_page'):
         if not request.is_xhr:
           return redirect(url_for(endpoint))
       return view(request, *args, **kwargs)
+    update_wrapper(wrapped, view)
     return wrapped
   if not arg_exist:
-    return decorator(_endpoint)
-  return decorator
+    return auto_adapt_to_methods(decorator)(_endpoint)
+  return auto_adapt_to_methods(decorator)
+
 
 class memcache_property(object):
   """A decorator that converts a function into a lazy property.  The

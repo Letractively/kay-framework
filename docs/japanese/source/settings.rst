@@ -26,21 +26,6 @@ Kayアプリケーションの基本的な設定はプロジェクトディレ�
    デバッグ機能の有効/無効を設定します。有効にする場合は ``True``, 無効にする場合は ``False`` を設定します。デフォルト値は ``True`` です。デバッグを有効にすると、Werkzeugのデバッガを使用することができます。サービスの実運用環境では ``False`` に設定してください。
 
    
-.. attribute:: PROFILE
-
-   プロファイリングの有効/無効を設定します。有効にすると、実行時のパフォーマンス測定結果がHTMLに出力されます。有効にする場合は ``True``, 無効にする場合は ``False`` を設定します。デフォルト値は ``False`` です。
-
-   
-.. attribute:: PRINNT_CALLERS_ON_PROFILING
-
-   プロファイリング実施時の関数の呼び出し元出力のオン・オフを設定します。有効にする場合は ``True``, 無効にする場合は ``False`` を設定します。デフォルト値は ``False`` です。
-
-   
-.. attribute:: PRINNT_CALLEES_ON_PROFILING
-
-   プロファイリング実施時の呼ばれた関数出力のオン・オフを設定します。有効にする場合は ``True``, 無効にする場合は ``False`` を設定します。デフォルト値は ``False`` です。
-
-   
 .. attribute:: SECRET_KEY
 
    ハッシュ値を生成するためのシードを設定します。デフォルト値は ``ReplaceItWithSecretString`` です。必ず書き換えるようにしてください。
@@ -108,10 +93,6 @@ Kayアプリケーションの基本的な設定はプロジェクトディレ�
    上記のキャッシュをログインしていない時のみ適用するかどうかを設定します。デフォルト値は ``True`` です。
 
    
-.. attribute:: ADD_APP_PREFIX_TO_KIND
-
-   ``db.Model.kind()`` メソッドにアプリケーション名の prefix を付けるかどうかを設定します。有効にする場合は ``True``, 無効にする場合は ``False`` を設定します。デフォルト値は ``True`` です。有効にすると ``kind()`` の値は ``applicaion名_model名`` (全て小文字に変換される)となります。
-
 .. attribute:: FORMS_USE_XHTML
 
    ``True`` にセットすると :mod:`kay.utils.forms` は xhtml としてフォームをレンダリングします。 デフォルト値は ``False`` です。
@@ -272,19 +253,4 @@ Kayアプリケーションの基本的な設定はプロジェクトディレ�
 .. attribute:: DEFAULT_MAIL_FROM
 
    ここで設定した e-mail アドレスがシステムが送信するメールの FROM として使用されます。
-
-.. attribute:: PER_DOMAIN_SETTINGS
-
-   この辞書を適切に設定すると、リクエストのドメインパートに応じて設定ファイルを変更する事ができます。キーとしてドメイン名を、値として設定ファイルのモジュール名を設定します。
-
-   簡単な例を示します
-
-   .. code-block:: python
-
-
-   PER_DOMAIN_SETTINGS = {
-     'foo.example.com': 'foo_settings',
-     'bar.example.com': 'bar_settings',
-   }
-
 

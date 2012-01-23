@@ -51,7 +51,7 @@ class FlashMiddleware(object):
     try:
       if data:
         response.set_cookie(key, value=data)
-      else:
+      elif key in local.request.cookies:
         response.delete_cookie(key)
     except Exception:
       pass
