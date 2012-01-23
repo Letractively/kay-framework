@@ -14,7 +14,8 @@ from kay.ext.testutils.gae_test_base import GAETestBase
 
 class BadUrlsTestCase(GAETestBase):
   def setUp(self):
-    s = LazySettings(settings_module='kay.tests.regressiontests.badurls_settings')
+    s = LazySettings(
+      settings_module='kay.tests.regressiontests.badurls_settings')
     self.app = get_application(settings=s)
     try:
         self.client = Client(self.app, BaseResponse)
