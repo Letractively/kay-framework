@@ -10,3 +10,4 @@ from ereporter_test import *
 from live_settings_test import *
 from regressiontests.server_error_tests import *
 from regressiontests.badurls_test import *
+from cache_test.tests import *
