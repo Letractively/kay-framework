@@ -100,7 +100,10 @@ def setup_stub(high_replication=False):
 def runtest(target='', verbosity=0):
   suite = unittest.TestSuite()
   if target:
-    tests_mod = import_string("%s.tests" % target)
+    try:
+      tests_mod = import_string("%s.tests" % target)
+    except Exception:
+      tests_mod = import_string(target)
     suite.addTest(unittest.defaultTestLoader.loadTestsFromModule(
         tests_mod))
   else:
