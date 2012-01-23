@@ -88,21 +88,54 @@ jinja2 のコンテキストに ``create_lang_url`` 関数が自動でロード�
   <a href="{{ create_lang_url(lang='ja') }}">{{ _('Japanese') }}</a>
 
 
-javascript ハンドラー
+javascript での国際化
 ---------------------
 
-javascript で gettext を使用するためのハンドラーは下記のように定義します:
+javascript で gettext を使用するためのハンドラーは下記のように
+`myproject/urls.py` に追加します:
 
 .. code-block:: python
 
-  from kay.views.i18n import javascript_catalog
+   from kay.routing import (
+     ViewGroup, Rule
+   )
+   view_groups = [
+     ViewGroup(
+       Rule('/_ah/queue/deferred', endpoint='deferred',
+         view='kay.handlers.task.task_handler'),
+       Rule('/maintenance_page', endpoint='_internal/maintenance_page',
+         view='kay._internal.views.maintenance_page'),
+       Rule('/_i18n.js', endpoint='i18n_js',
+         view='kay.views.i18n.javascript_catalog',
+         defaults={'packages':('myapp','kay')})
+   )]
 
-  return Map([
-    Rule('/_i18n.js', endpoint='i18n_js',
-         defaults={'packages':('myapp','kay')}),
-  ])
+`index.html` で次のように読み込みます:
 
-  all_views = {
-    'i18n_js': javascript_catalog,
-  }
+.. code-block:: html
+
+   <script src="{{ url_for('i18n_js') }}"></script>
+
+下記のような Javascript をアプリケーションディレクトリ内（例えば
+`myapp/static/myapp.js`）に配置します:
+
+.. code-block:: javascript
+
+   document.getElementById('dynamic').innerHTML = gettext('Hello');
+
+`app.yaml` に静的ファイル用のハンドラーを追加します:
+
+.. code-block:: yaml
+
+   handlers:
+   - url: /static
+     static_dir: myapp/static
+
+これで下記のようにすれば特定の言語向け（ここでは ja です）にメッセージ
+を抽出、追加できます:
+
+.. code-block:: bash
+
+   $ python manage.py extract_messages myapp -d jsmessages
+   $ python manage.py add_translations myapp -l ja
 

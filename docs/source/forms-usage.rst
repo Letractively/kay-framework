@@ -257,8 +257,8 @@ is easy?
     </div>
 
 The last example show you how to specify a class attribute on error
-messages(be sure its 'class_', not 'class'). Actually, you can specify
-any attribute on any renderable widget by passing keyword argument on
+messages(be sure its class_, not class). Actually, you can specify any
+attribute on any renderable widget by passing keyword argument on
 rendering.
 
 

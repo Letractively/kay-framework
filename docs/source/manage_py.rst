@@ -475,6 +475,9 @@ Run test for installed applications.
    * ``1``: Display the degree of progression with ``.``.
    * ``2``: Display the docstrings of test methods.
 
+.. cmdoption:: --high-replication
+
+   If specified, the tests will be executed with HRD emulation.
 
 .. program:: manage.py update_translations
 
