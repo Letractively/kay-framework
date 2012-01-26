@@ -18,13 +18,14 @@ from google.appengine.api import urlfetch_stub
 from google.appengine.api.memcache import memcache_stub
 from google.appengine.api import user_service_stub
 
-from werkzeug import BaseResponse, Client, Request
+from werkzeug import BaseResponse, Request
 
 import kay
 from kay.app import get_application
 from kay.conf import LazySettings
 from kay.ext.testutils.gae_test_base import GAETestBase
 from kay.tests import capability_stub as mocked_capability_stub
+from kay.utils.test import Client
 
 class MaintenanceCheckTestCase(unittest.TestCase):
   
@@ -147,6 +148,26 @@ class CronOnlyDebugTestCase(GAETestBase):
             headers=(('X-AppEngine-Cron', 'true'),))
     self.assertEqual(response.status_code, 200)
     self.assertTrue(response.data == "OK")
+
+
+class StackedDecoratorsTestCase(GAETestBase):
+
+  def setUp(self):
+    s = LazySettings(settings_module='kay.tests.stacked_decorators.settings')
+    app = get_application(settings=s)
+    self.client = Client(app, BaseResponse)
+
+  def test_stacked_decorators(self):
+    self.client.test_login(email='user@example.com')
+    response = self.client.get('/')
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/class')
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/ndb')
+    self.assertEqual(response.status_code, 200)
+    response = self.client.get('/class_ndb')
+    self.assertEqual(response.status_code, 200)
+
 
 if __name__ == "__main__":
   unittest.main()
