@@ -130,7 +130,7 @@ by following command.
 .. code-block:: bash
 
   $ python manage.py runserver
-  Running on Kay-1.1.1
+  Running on Kay-2.1.0
   INFO     2012-01-02 16:47:14,832 appengine_rpc.py:159] Server: appengine.google.com
   [...]
   INFO     2012-01-02 16:47:15,387 dev_appserver_multiprocess.py:638] Running application myprojectappid on port 8080: http://localhost:8080
@@ -264,7 +264,7 @@ The last one is an html template.
    </body>
    </html>
 
-A template engine which is used in Kay is jinja2. Please remember
+The template engine which is used in Kay is jinja2 (available from GAE platform). Please remember
 following two things about jinja2 first.
 
 * To display a context value passed from your view, wrap a name of the
