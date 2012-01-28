@@ -31,8 +31,7 @@ class MethodDecoratorAdaptor(object):
   used on methods
   """
   def __init__(self, decorator, func):
-    if isinstance(func, MethodDecoratorAdaptor):
-      update_wrapper(self, func)
+    update_wrapper(self, func)
     # NB: update the __dict__ first, *then* set
     # our own .func and .decorator, in case 'func' is actually
     # another MethodDecoratorAdaptor object, which has its

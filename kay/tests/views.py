@@ -10,6 +10,7 @@ Kay test views.
 from werkzeug import (
   unescape, redirect, Response,
 )
+from google.appengine.ext.ndb import context
 
 from kay.utils import (
   local, render_to_response, url_for,
@@ -62,3 +63,4 @@ class CronOnly(BaseHandler):
   @cron_only
   def get(self):
     return Response("OK")
+
