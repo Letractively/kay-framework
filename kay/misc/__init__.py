@@ -50,7 +50,7 @@ def get_datastore_paths():
 
   The datastore is stored in the same location as dev_appserver uses by
   default, but the name is altered to be unique to this project so multiple
-  Django projects can be developed on the same machine in parallel.
+  Kay projects can be developed on the same machine in parallel.
 
   Returns:
     (datastore_path, history_path)
