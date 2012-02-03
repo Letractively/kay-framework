@@ -15,6 +15,7 @@ list of all possible variables.
 import os
 import re
 import time
+import threading
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
@@ -56,13 +57,15 @@ class LiveSettings(object):
 
   def __init__(self):
     self._settings_cache = {}
+    self.lock = threading.Lock()
 
   def _set_local_cache(self, key, value, ttl=_DEFAULT_TTL, namespace=None):
     value = (value, int(time.time())+ttl, ttl)
 
-    if namespace not in self._settings_cache:
-      self._settings_cache[namespace] = {}
-    self._settings_cache[namespace][key] = value
+    with self.lock:
+      if namespace not in self._settings_cache:
+        self._settings_cache[namespace] = {}
+      self._settings_cache[namespace][key] = value
 
   def _get_local_cache(self, key, default=_missing, namespace=None):
     data = self._settings_cache.get(namespace, {}).get(key, None)
