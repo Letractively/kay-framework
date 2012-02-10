@@ -10,7 +10,6 @@ Install following stuff:
   * Python-2.7.x
   * App Engine SDK/Python 1.6+
   * Kay Framework
-  * jinja2 library (install with easy_install jinja2)
   * ipython (recommended)
 
 If you retreive Kay from the repository, you need to install also:

@@ -43,7 +43,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Kay'
-copyright = u'2009, Takashi Matsuo'
+copyright = u'2012, Takashi Matsuo'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -191,6 +191,8 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
+html_search_language = 'ja'
 
 # -- Options for PDF output --------------------------------------------------
 

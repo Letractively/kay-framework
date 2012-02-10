@@ -9,8 +9,7 @@ Welcome to Kay |release| documentation!
 
 This document reflects the newest version of Kay. Please visit following urls for older releases:
 
-  - http://kay-docs.shehas.net/1.0.1/
-  - http://kay-docs.shehas.net/1.0.0/
+  - http://kay-docs.shehas.net/1.1.0/
 
 Contents:
 
