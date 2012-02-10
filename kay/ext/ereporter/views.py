@@ -162,7 +162,8 @@ def report_admin(request):
     exceptions = GetQuery(order='-date', **query_args)
     paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))
-  except db.NeedIndexError:
+  except db.NeedIndexError, e:
+    logging.warn(e)
     exceptions = GetQuery(**query_args)
     paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))
