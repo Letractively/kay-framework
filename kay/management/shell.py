@@ -362,10 +362,21 @@ def rshell(appid=('a', ''), host=('h', ''), path=('p', ''),
     except ImportError:
       pass
     else:
-      sh = IPython.Shell.IPShellEmbed(
-        argv=['-pi1', '%s[\#]: ' % appid, '-po', '%s[\#]: ' % appid],
-        banner=banner)
-      sh(global_ns={}, local_ns=namespace)
+      try:
+        sh = IPython.Shell.IPShellEmbed(
+          argv=['-pi1', '%s[\#]: ' % appid, '-po', '%s[\#]: ' % appid],
+          banner=banner)
+        sh(global_ns={}, local_ns=namespace)
+      except AttributeError:
+        from IPython.config.loader import Config
+        from IPython.frontend.terminal.embed import InteractiveShellEmbed
+        cfg = Config()
+	prompt_config = cfg.PromptManager
+	prompt_config.in_template = '%s[\#]: ' % appid
+        prompt_config.in2_template = '   .\\D.: '
+        prompt_config.out_template = '%s[\#]: ' % appid
+        sh = InteractiveShellEmbed(config=cfg, banner1=banner, user_global_ns={})
+        sh(local_ns=namespace)
       return
   sys.ps1 = '%s> ' % appid
   if readline is not None:
