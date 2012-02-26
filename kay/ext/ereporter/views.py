@@ -60,6 +60,7 @@ class ReportGenerator(BaseHandler):
 
   DEFAULT_MAX_RESULTS = 100
 
+  @cron_only
   def get(self):
     from kay.utils import render_to_string
 
@@ -133,7 +134,7 @@ class ReportGenerator(BaseHandler):
 
     return Response()
 
-report_generator = cron_only(ReportGenerator())
+report_generator = ReportGenerator()
 
 def report_admin(request):
   from kay.utils import render_to_response
@@ -161,7 +162,8 @@ def report_admin(request):
     exceptions = GetQuery(order='-date', **query_args)
     paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))
-  except db.NeedIndexError:
+  except db.NeedIndexError, e:
+    logging.warn(e)
     exceptions = GetQuery(**query_args)
     paginator = Paginator(exceptions, 10)
     page = paginator.page(request.args.get('page', 1))

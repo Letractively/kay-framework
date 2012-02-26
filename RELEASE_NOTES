@@ -9,7 +9,7 @@ Kay-2.1.0 - January xxx 2012
 ============================
 
 - This version is made specifically to Python2.7 runtime.
-
+- 
 
 
 Kay-1.1.0 - March 7th 2011
@@ -19,7 +19,7 @@ Kay-1.1.0 - March 7th 2011
   - Added a new kay.ext.ereporter application for managing error reporting.
 
 - Added a new kay.ext.live_settings application for managing global settings
-  without having to reploy.
+  without redeploying the app.
 
 - Added a new AppStatsMiddleware which can be used to enable appstats.
 

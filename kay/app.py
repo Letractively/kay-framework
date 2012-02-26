@@ -12,6 +12,7 @@ Kay application.
 import sys
 import os
 import logging
+import threading
 
 from werkzeug import (
   Request, ClosingIterator, DispatcherMiddleware,
@@ -44,6 +45,7 @@ from kay.conf import settings, _settings, LazySettings
 
 translations_cache = {}
 hook_installed = False
+lock = threading.Lock()
 
 def get_application(settings=_settings):
   global hook_installed
@@ -445,16 +447,17 @@ class KayApp(object):
   def _prepare(self, environ):
     kay.setup_syspath()
     if _settings.USE_DB_HOOK:
-      global hook_installed
-      if not hook_installed:
-        from google.appengine.api import apiproxy_stub_map
-        from kay.utils.db_hook import post_hook
-        from kay.utils.db_hook import pre_hook
-        apiproxy_stub_map.apiproxy.GetPostCallHooks().Append(
-          'post_hook', post_hook, 'datastore_v3')
-        apiproxy_stub_map.apiproxy.GetPreCallHooks().Append(
-          'pre_hook', pre_hook, 'datastore_v3')
-        hook_installed = True
+      with lock:
+        global hook_installed
+        if not hook_installed:
+          from google.appengine.api import apiproxy_stub_map
+          from kay.utils.db_hook import post_hook
+          from kay.utils.db_hook import pre_hook
+          apiproxy_stub_map.apiproxy.GetPostCallHooks().Append(
+            'post_hook', post_hook, 'datastore_v3')
+          apiproxy_stub_map.apiproxy.GetPreCallHooks().Append(
+            'pre_hook', pre_hook, 'datastore_v3')
+          hook_installed = True
     local.app = self
     if self.url_map is None or self.has_error_on_init_url_map:
       try:
