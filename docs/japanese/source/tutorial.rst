@@ -7,18 +7,13 @@ Kay チュートリアル
 
 下記のものをインストールします。
 
-* Python-2.5
-* App Engine SDK/Python
+* Python-2.7.x
+* App Engine SDK/Python 1.6+
 * Kay Framework
 * ipython (推奨)
 
-macports の python25 を使うばあいは、他に下記もインストールしましょう。
 Kay のリポジトリバージョンを使うには mercurial も必要です。
 
-* py25-hashlib
-* py25-socket-ssl
-* py25-pil
-* py25-ipython (推奨)
 * mercurial
 
 mercurial を使用して、Kayのソースコードを下記のようにして clone できま
@@ -35,13 +30,6 @@ http://code.google.com/p/kay-framework/downloads/list から最新版をダウ
 .. code-block:: bash
 
    $ tar zxvf kay-VERSION.tar.gz
-
-.. Note::
-   
-   このチュートリアルでは Kay-0.10.0相当のバージョンを使用します。
-   Kay-0.10.0 が既にリリースされていればそちらのリリースバージョンを、
-   まだリリースされてなければリポジトリの最新版を使用してください。
-
 
 もし zip 版の appengine SDK をインストールした場合は、下記のようにシン
 ボリックリンクを作ってください。appengine の SDK をインストーラーを使用
