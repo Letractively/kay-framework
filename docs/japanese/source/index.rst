@@ -2,7 +2,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Kay 2.1.0 ドキュメントへようこそ
+Kay |release| ドキュメントへようこそ
 ===========================================
 
 このドキュメントは最新版です。古いバージョンのドキュメントは下記をクリックしてください。
