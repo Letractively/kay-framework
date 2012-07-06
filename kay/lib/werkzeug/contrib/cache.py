@@ -463,9 +463,13 @@ class RedisCache(BaseCache):
     .. versionchanged:: 0.8
        This cache backend now properly serializes objects.
 
+    .. versionchanged:: 0.8.3
+       This cache backend now supports password authentication.
+
     :param host: address of the Redis server or an object which API is
                  compatible with the official Python Redis client (redis-py).
-    :param port: port number on which Redis server listens for connections
+    :param port: port number on which Redis server listens for connections.
+    :param password: password authentication for the Redis server.
     :param default_timeout: the default timeout that is used if no timeout is
                             specified on :meth:`~BaseCache.set`.
     :param key_prefix: A prefix that should be added to all keys.
@@ -488,7 +492,8 @@ class RedisCache(BaseCache):
         """Dumps an object into a string for redis.  By default it serializes
         integers as regular string and pickle dumps everything else.
         """
-        if isinstance(value, (int, long)):
+        t = type(value)
+        if t is int or t is long:
             return str(value)
         return '!' + pickle.dumps(value)
 
