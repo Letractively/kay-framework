@@ -55,7 +55,6 @@ def runserver_passthru_argv():
     print_status(dev_appserver_main.__doc__ % render_dict)
     sys.stdout.flush()
     sys.exit(0)
-    
   dev_appserver_main.main([progname] + args + [os.getcwdu()])
 
 runserver_passthru_argv.passthru = True
