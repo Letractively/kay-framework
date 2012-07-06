@@ -16,8 +16,8 @@ _paragraph_re = re.compile(r'(?:\r\n|\r|\n){2,}')
 
 @environmentfilter
 def nl2br(environment, value):
-  result = u'<br/>'.join(u'%s' % p.replace('\n', '<br>\n')
-                        for p in _paragraph_re.split(escape(value)))
+  result = u'<br/>'.join(u'%s' % p.replace('\n', Markup('<br>\n'))
+                         for p in _paragraph_re.split(escape(value)))
   if environment.autoescape:
     result = Markup(result)
   return result
