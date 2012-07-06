@@ -213,6 +213,6 @@ class LiveSettings(object):
     # For the time being just do a multi_get to ensure 
     # we get the same value as the get() method.
     # TODO: Make this more efficient
-    return self.get_multi(self.keys(namespace=namespace)).items()
+    return self.get_multi(self.keys(namespace=namespace), namespace=namespace).items()
 
 live_settings = LiveSettings()
